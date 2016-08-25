@@ -1,12 +1,29 @@
 <?php
-function insereHorario($diaDaSemana,$data) {
+
+function insereHorario($diaDaSemana, $data, $nomeDiaSemana, $codFilial, $descricao) {
+    // CRIO E DIGO QUE O ARRAY ESTAR VAZIO
     $arrayHoraIni = array();
     $arrayHoraFini = array();
     $arrayAula = array();
     $arrayCodigoTurno = array();
-    $sql = "SELECT * FROM PHE_SHORARIO H WHERE H.DIASEMANA = $diaDaSemana
-            ORDER BY H.DIASEMANA
-            OFFSET 0 ROWS FETCH NEXT 20 ROWS ONLY";
+    
+    // INSTRUÇÃO SQL
+    $sql = "SELECT
+            H.CODHOR,
+            H.CODTURNO,
+            H.DIASEMANA,
+            H.HORAINICIAL,
+            H.HORAFINAL,
+            H.AULA,
+            T.CODFILIAL,
+            T.CODTURNO
+            
+        FROM
+                dbo.PHE_SHORARIO H INNER JOIN dbo.PHE_STURNO T ON H.CODTURNO = T.CODTURNO
+                WHERE 
+            (T.CODFILIAL = '$codFilial') AND
+           (H.DIASEMANA = '$diaDaSemana')";
+    
     $result = mssql_query($sql);
     if ($result) {
         while ($linha = mssql_fetch_array($result)) {
@@ -16,10 +33,9 @@ function insereHorario($diaDaSemana,$data) {
             $arrayCodigoTurno[] = $linha['CODTURNO'];
         }
         for ($index = 0; $index < count($arrayCodigoTurno); $index++) {
-             $insert = "INSERT dbo.PHE_CALENDARIO_ESCOLA (DATA,HORINI,HORFIM,THORAAULA,CODTURNO,CODFILIAL,CODLETIVO,STATUS,DIASEMANA)"
-            . "VALUES ('$data','$arrayHoraIni[$index]','$arrayHoraFini[$index]','01:00:00.0000000',$arrayCodigoTurno[$index],3,1,'A','SEGUNDA')";
+            $insert = "INSERT dbo.PHE_CALENDARIO_ESCOLA (DESCRICAO,DATADIA,HORINI,HORFIM,CODTURNO,CODFILIAL,CODLETIVO,STATUS,DIASEMANA)"
+                    . "VALUES ('$descricao','$data','$arrayHoraIni[$index]','$arrayHoraFini[$index]',$arrayCodigoTurno[$index],$codFilial,0,'A','$nomeDiaSemana')";
             $result = mssql_query($insert);
         }
-        echo "deu certo";
     }
 }

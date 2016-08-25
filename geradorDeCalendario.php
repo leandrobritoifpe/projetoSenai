@@ -1,77 +1,65 @@
 <?php
 
 if (isset($_POST['DATAFIN'])) {
+    include_once './util/conectaBanco.php';
     include './gerenciadorDeFuncoes.php';
- $servidor = "52.34.253.148";
-$usuario = "pe";
-$banco = "DBSystemSec";
-$senha = "!@#123qwe";
-//NÃ£o Alterar abaixo:
-$conmssql = mssql_connect($servidor,$usuario,$senha);
-$db = mssql_select_db($banco, $conmssql);
-if ($conmssql && $db){
-echo "Parabens!! A conexÃ£o ao banco de dados ocorreu normalmente!";
-} else {
-echo "Nao foi possivel conectar ao banco MSSQL";
-}
-   $dataInicial = $_POST['DATAINI'];
-   $dataFinal = $_POST['DATAFIN'];
-   
-   //$horaPulo = 0;
-   //$horaAnterior = 0;
+    conectaComBanco();
+    
+    $dataInicial = $_POST['DATAINI'];
+    $dataFinal = $_POST['DATAFIN'];
+    $descricao = $_POST['DESCRICAO'];
+    $codFilial = 1;
     for ($i = strtotime($dataInicial); $i <= strtotime($dataFinal); $i = $i + 86400) {
-        //echo "teste";
-      $i;
-      
-      $datai = date("d-m-Y", $i);
-      $datai2 = date("Y-m-d", $i);
+        $i;
 
-        
-       $diaSemana = array(0, 1, 2, 3, 4, 5, 6);
+        $datai = date("d-m-Y", $i);
+        $dataConvertidaForamatoAmericano = date("Y-m-d", $i);
 
-       $diaSemanaNumero = date('w', strtotime($datai2));
-        $ds = $diaSemana[$diaSemanaNumero];
+        $diaSemana = array(0, 1, 2, 3, 4, 5, 6);
 
-        switch ($ds) {
-            case"0": $diaSemana = "Dom";
+        $diaSemanaNumero = date('w', strtotime($dataConvertidaForamatoAmericano));
+        $dia = $diaSemana[$diaSemanaNumero];
+
+        switch ($dia) {
+            case"0": $diaSemana = "DOM";
                 break;
-            case"1": $diaSemana = "Seg";
+            case"1": $diaSemana = "SEG";
                 break;
-            case"2": $diaSemana = "Ter";
+            case"2": $diaSemana = "TER";
                 break;
-            case"3": $diaSemana = "Qua";
+            case"3": $diaSemana = "QUA";
                 break;
-            case"4": $diaSemana = "Qui";
+            case"4": $diaSemana = "QUI";
                 break;
-            case"5": $diaSemana = "Sex";
+            case"5": $diaSemana = "SEX";
                 break;
-            case"6": $diaSemana = "Sab";
+            case"6": $diaSemana = "SAB";
                 break;
         }
 
 
         switch ($diaSemana) {
-            case "Seg":
-                insereHorario(2,$datai2);
+            case "SEG":
+                insereHorario(2, $dataConvertidaForamatoAmericano, $diaSemana,$codFilial,$descricao);
                 break;
-            case "Ter":
-                insereHorario(3,$datai2);
+            case "TER":
+                insereHorario(3, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial,$descricao);
                 break;
-            case "Qua":
-                insereHorario(4,$datai2);
+            case "QUA":
+                insereHorario(4, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial,$descricao);
                 break;
-            case "Qui":
-                insereHorario(5,$datai2);
+            case "QUI":
+                insereHorario(5, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial,$descricao);
                 break;
-            case "Sex":
-                insereHorario(6,$datai2);
+            case "SEX":
+                insereHorario(6, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial,$descricao);
                 break;
-            case "Sab":
-                insereHorario(7,$datai2);
+            case "SAB":
+                insereHorario(7, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial,$descricao);
                 break;
             default:
                 break;
         }
     }
-
+   //echo "<script>window.location='index.php';alert('CALENDARIO GERADO COM SUCESSO');</script>";
 }
