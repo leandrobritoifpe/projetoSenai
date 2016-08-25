@@ -42,7 +42,8 @@ if (date("Y-m-d",$a) == '2017-01-01') {
     echo "certo";
 }
 else{
-    echo date("Y-m-d",$a);
+    echo "aqui:";
+    echo date("m-d",$a);
 }
     
 }

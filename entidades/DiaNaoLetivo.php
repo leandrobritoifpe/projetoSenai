@@ -21,14 +21,14 @@ class DiaNaoLetivo {
       $this->horaInicial = $VhoraInicial;
   }
   public function get_horaInicial(){
-      return $this->horaInicial;
+     return $this->horaInicial;
   }
-   public function set_horaFinal($VhoraFinal){
+  public function set_horaFinal($VhoraFinal){
       $this->horaFinal = $VhoraFinal;
   }
   public function get_horaFinal(){
       return $this->horaFinal;
-  }
+ }
    public function set_data($Vdata){
       $this->data = $Vdata;
   }
@@ -54,7 +54,7 @@ class DiaNaoLetivo {
       return $this->codFilial;
   }
   public function set_status($Vstatus){
-      $this->status = $Vstatus;
+     $this->status = $Vstatus;
   }
   public function get_status(){
       return $this->status;

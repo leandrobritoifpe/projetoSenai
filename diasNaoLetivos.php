@@ -12,15 +12,12 @@
         <!--  COM.1 = ESTE C�DIGO � USADO PARA DEIXAR MEU SITE RESPONSIVEL-->
 
         <div class=�container�>
-            <form method="post" action="geradorDeCalendario.php">
+            <form method="post" action="cadastraDiaNaoLetivo.php">
                 <p>
                     DATA INICAL: <br />
-                    <input type="texte" id="DATAINI" name="DATAINI" />
+                    <input type="texte" id="DATAINI" name="DATA" />
                 </p>
-                <p>
-                    DATA FINAL: <br />
-                    <input type="texte" id="DATAFIN" name="DATAFIN" />
-                </p>
+                
                  <p>
                    DESCRICAO: <br />
                     <input type="texte" id="DESCRICAO" name="DESCRICAO" />

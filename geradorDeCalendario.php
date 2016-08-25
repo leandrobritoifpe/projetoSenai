@@ -1,14 +1,25 @@
 <?php
 
 if (isset($_POST['DATAFIN'])) {
-    include_once './util/conectaBanco.php';
+    //include_once './util/conectaBanco.php';
     include './gerenciadorDeFuncoes.php';
-    conectaComBanco();
-    
+    //conectaComBanco();
+    //include_once './util/ConnectaBanco.php';
+    //$con = new ConnectaBanco();
+    //$conexao = $con->conectandoComBanco();
+    include_once './entidades/CalendarioEscolar.php';
+    include_once './dao/CalendarioEscolarDao.php';
+    $dao = new CalendarioEscolarDao();
+    $calendarioEscolar = new CalendarioEscolar();
+    $calendarioEscolar->set_descricao(converteStringParaMaiusculo($_POST['DESCRICAO']));
+    //$calendarioEscolar->set_dataInicial($_POST['DATAINI']);
+   // $calendarioEscolar->set_dataFinal($_POST['DATAFIN']);
+    $calendarioEscolar->set_codFilial(1);
+    $calendarioEscolar->set_status('A');
     $dataInicial = $_POST['DATAINI'];
     $dataFinal = $_POST['DATAFIN'];
-    $descricao = $_POST['DESCRICAO'];
-    $codFilial = 1;
+   
+    
     for ($i = strtotime($dataInicial); $i <= strtotime($dataFinal); $i = $i + 86400) {
         $i;
 
@@ -40,26 +51,49 @@ if (isset($_POST['DATAFIN'])) {
 
         switch ($diaSemana) {
             case "SEG":
-                insereHorario(2, $dataConvertidaForamatoAmericano, $diaSemana,$codFilial,$descricao);
+                $calendarioEscolar->set_diaDaSemana(2);
+                $calendarioEscolar->set_nomeDoDia($diaSemana);
+                $dao->geraCaledario($calendarioEscolar);
+                //insereHorario(2, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial, $descricao);
                 break;
             case "TER":
-                insereHorario(3, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial,$descricao);
+                $calendarioEscolar->set_diaDaSemana(3);
+                $calendarioEscolar->set_nomeDoDia($diaSemana);
+                $calendarioEscolar->set_dataDia($dataConvertidaForamatoAmericano);
+                $dao->geraCaledario($calendarioEscolar);
+                //insereHorario(3, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial, $descricao);
                 break;
             case "QUA":
-                insereHorario(4, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial,$descricao);
+                $calendarioEscolar->set_diaDaSemana(4);
+                $calendarioEscolar->set_nomeDoDia($diaSemana);
+                $calendarioEscolar->set_dataDia($dataConvertidaForamatoAmericano);
+                $dao->geraCaledario($calendarioEscolar);
+               // insereHorario(4, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial, $descricao);
                 break;
             case "QUI":
-                insereHorario(5, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial,$descricao);
+                $calendarioEscolar->set_diaDaSemana(5);
+                $calendarioEscolar->set_nomeDoDia($diaSemana);
+                $calendarioEscolar->set_dataDia($dataConvertidaForamatoAmericano);
+                $dao->geraCaledario($calendarioEscolar);
+                //insereHorario(5, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial, $descricao);
                 break;
             case "SEX":
-                insereHorario(6, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial,$descricao);
+                $calendarioEscolar->set_diaDaSemana(6);
+                $calendarioEscolar->set_nomeDoDia($diaSemana);
+                $calendarioEscolar->set_dataDia($dataConvertidaForamatoAmericano);
+                $dao->geraCaledario($calendarioEscolar);
+                //insereHorario(6, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial, $descricao);
                 break;
             case "SAB":
-                insereHorario(7, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial,$descricao);
+                $calendarioEscolar->set_diaDaSemana(7);
+                $calendarioEscolar->set_nomeDoDia($diaSemana);
+                $dao->geraCaledario($calendarioEscolar);
+                //insereHorario(7, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial, $descricao);
                 break;
             default:
                 break;
         }
     }
-   //echo "<script>window.location='index.php';alert('CALENDARIO GERADO COM SUCESSO');</script>";
+    $con->fecharConexaoComBanco();
+    //echo "<script>window.location='index.php';alert('CALENDARIO GERADO COM SUCESSO');</script>";
 }
