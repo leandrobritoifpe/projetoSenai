@@ -1,24 +1,19 @@
 <?php
 
 if (isset($_POST['DATAFIN'])) {
-    //include_once './util/conectaBanco.php';
     include './gerenciadorDeFuncoes.php';
-    //conectaComBanco();
-    //include_once './util/ConnectaBanco.php';
-    //$con = new ConnectaBanco();
-    //$conexao = $con->conectandoComBanco();
     include_once './entidades/CalendarioEscolar.php';
     include_once './dao/CalendarioEscolarDao.php';
     $dao = new CalendarioEscolarDao();
+    
     $calendarioEscolar = new CalendarioEscolar();
     $calendarioEscolar->set_descricao(converteStringParaMaiusculo($_POST['DESCRICAO']));
-    //$calendarioEscolar->set_dataInicial($_POST['DATAINI']);
-   // $calendarioEscolar->set_dataFinal($_POST['DATAFIN']);
     $calendarioEscolar->set_codFilial(1);
     $calendarioEscolar->set_status('A');
     $dataInicial = $_POST['DATAINI'];
     $dataFinal = $_POST['DATAFIN'];
    
+    $cont = 0;
     
     for ($i = strtotime($dataInicial); $i <= strtotime($dataFinal); $i = $i + 86400) {
         $i;
@@ -53,47 +48,56 @@ if (isset($_POST['DATAFIN'])) {
             case "SEG":
                 $calendarioEscolar->set_diaDaSemana(2);
                 $calendarioEscolar->set_nomeDoDia($diaSemana);
-                $dao->geraCaledario($calendarioEscolar);
-                //insereHorario(2, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial, $descricao);
+                $calendarioEscolar->set_dataDia($dataConvertidaForamatoAmericano);
+                $cont += $dao->geraCaledario($calendarioEscolar);
+                $dao->fechaBanco();
                 break;
             case "TER":
                 $calendarioEscolar->set_diaDaSemana(3);
                 $calendarioEscolar->set_nomeDoDia($diaSemana);
                 $calendarioEscolar->set_dataDia($dataConvertidaForamatoAmericano);
-                $dao->geraCaledario($calendarioEscolar);
-                //insereHorario(3, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial, $descricao);
+                $cont += $dao->geraCaledario($calendarioEscolar);
+                $dao->fechaBanco();
                 break;
             case "QUA":
                 $calendarioEscolar->set_diaDaSemana(4);
                 $calendarioEscolar->set_nomeDoDia($diaSemana);
                 $calendarioEscolar->set_dataDia($dataConvertidaForamatoAmericano);
-                $dao->geraCaledario($calendarioEscolar);
-               // insereHorario(4, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial, $descricao);
+                $cont += $dao->geraCaledario($calendarioEscolar);
+                $dao->fechaBanco();
                 break;
             case "QUI":
                 $calendarioEscolar->set_diaDaSemana(5);
                 $calendarioEscolar->set_nomeDoDia($diaSemana);
                 $calendarioEscolar->set_dataDia($dataConvertidaForamatoAmericano);
-                $dao->geraCaledario($calendarioEscolar);
-                //insereHorario(5, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial, $descricao);
+                $cont += $dao->geraCaledario($calendarioEscolar);
+                $dao->fechaBanco();
                 break;
             case "SEX":
                 $calendarioEscolar->set_diaDaSemana(6);
                 $calendarioEscolar->set_nomeDoDia($diaSemana);
                 $calendarioEscolar->set_dataDia($dataConvertidaForamatoAmericano);
-                $dao->geraCaledario($calendarioEscolar);
-                //insereHorario(6, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial, $descricao);
+                $cont += $dao->geraCaledario($calendarioEscolar);
+                $dao->fechaBanco();
                 break;
             case "SAB":
                 $calendarioEscolar->set_diaDaSemana(7);
                 $calendarioEscolar->set_nomeDoDia($diaSemana);
-                $dao->geraCaledario($calendarioEscolar);
-                //insereHorario(7, $dataConvertidaForamatoAmericano, $diaSemana, $codFilial, $descricao);
+                $calendarioEscolar->set_dataDia($dataConvertidaForamatoAmericano);
+                $cont += $dao->geraCaledario($calendarioEscolar);
+                $dao->fechaBanco();
                 break;
             default:
                 break;
         }
     }
-    $con->fecharConexaoComBanco();
-    //echo "<script>window.location='index.php';alert('CALENDARIO GERADO COM SUCESSO');</script>";
+    if ($cont != 0) {
+        $mensagem = exibeMesagensParaUsuario(0);
+        echo "<script>window.location='index.php';alert('$mensagem');</script>";
+    }
+        
+    else{
+        $mensagem = exibeMesagensParaUsuario(1);
+        echo "<script>window.location='index.php';alert('$mensagem');</script>";
+}
 }

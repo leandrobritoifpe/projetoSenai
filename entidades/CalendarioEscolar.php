@@ -1,8 +1,8 @@
 <?php
 
 class CalendarioEscolar {
-    private $dataInicial;
-    private $dataFinal;
+   // private $dataInicial;
+    //private $dataFinal;
     private $codFilial;
     private $descricao;
     private $status;

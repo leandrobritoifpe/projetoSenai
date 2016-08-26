@@ -6,11 +6,21 @@ include_once './entidades/DiaNaoLetivo.php';
 
 class DiaNaoLetivoDao {
     
+    private $conexao;
+
+    // CRIANDO O METODO DA CONEXAO
+    public function tentaConexao() {
+        try {
+            $con = new ConnectaBanco();
+            $this->conexao = $con->conectandoComBanco();
+        } catch (Exception $e) {
+            echo 'Exceção capturada: ', $e->getMessage(), "\n";
+        }
+    }
     //FUNCAO QUE INSERI DADOS NO BANCO
     public function inseriDiaNaoLetivo(DiaNaoLetivo $diaNaoLetivo) {
-        $con = new ConnectaBanco();
-        $conexao = $con->conectandoComBanco();
-
+      
+        $this->tentaConexao();
         $arrayDados = array(
             $diaNaoLetivo->get_descricao(), $diaNaoLetivo->get_data(), $diaNaoLetivo->get_horaInicial(), $diaNaoLetivo->get_horaFinal(),
             $diaNaoLetivo->get_codTurno(), $diaNaoLetivo->get_codFilial(), $diaNaoLetivo->get_status(), $diaNaoLetivo->get_diaSemana()
@@ -26,16 +36,16 @@ class DiaNaoLetivoDao {
             $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET STATUS = 'I', DESCRICAO = '$arrayDados[0]' WHERE DATADIA LIKE '%$mesDia';";
             $sucesso = mssql_query($update);
             if ($sucesso) {
-                mssql_close($conexao);
                 return 2;
             } else {
-                mssql_close($conexao);
                 return 3;
             }
         } else {
-            mssql_close($conexao);
             return 505;
         }
+    }
+    public function fechaBanco(){
+        mssql_close($this->conexao);
     }
 
 }
