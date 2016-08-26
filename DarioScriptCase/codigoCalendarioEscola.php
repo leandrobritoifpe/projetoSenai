@@ -1,16 +1,26 @@
 <?php
-/*
- * ARQUVIO geradorDeCalendario
- * OBNJETIVO: SERVIR DE CONTROLE PARA DAO
- * CRIADO : 25/08/2016
- * ULTIMA ATUALIZACAO : 26/08/2016
- * 
- * DS-> LEANDRO BRITO
+
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 
+/*IMPORTANTE
+ * 
+ * VARIAVEIS PARA SUBSTITUIR PELAS DO SCRIPCASE
+ * 
+ * - $_POST['DESCRICAO'];
+ * - NUMERO 1 (DENTRO DE COD FILIAL)
+ *  -  _POST['DATAINI]
+ *-    _POST[DATAFIN]
+ * -   $DATAINICAL
+ *-  $DATAFINAL
+ */ 
 
-if (isset($_POST['DATAFIN'])) {
-    //IMPORTANOD CLASSES E ARQUIVOS
+
+
+//IMPORTANOD CLASSES E ARQUIVOS
     include './gerenciadorDeFuncoes.php';
     include_once './entidades/CalendarioEscolar.php';
     include_once './dao/CalendarioEscolarDao.php';
@@ -116,5 +126,4 @@ if (isset($_POST['DATAFIN'])) {
     else{
       $mensagem = exibeMesagensParaUsuario(1);
        echo "<script>window.location='index.php';alert('$mensagem');</script>";
-}
 }

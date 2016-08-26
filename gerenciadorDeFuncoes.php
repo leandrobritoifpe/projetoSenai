@@ -1,7 +1,18 @@
 <?php
 
+/*  ARQUVIO gerenciadorDeFuncoes.php
+ * OBJETIVO : SERVIR DE BIBLIOTECA PARA FUNCAO BÁSICAS
+ * CRIADA : 22/08/2016
+ * ULTIMA ATUALIZACAO 26/08/2016
+ * 
+ * DS-> LEANDRO BRITO ;)
+ */
+
+
+
 include_once './util/ConnectaBanco.php';
 
+//FUNCAO QUE RETORNA DIA DA SEMANA
 function retornaDiaDaSemana($diaNumericoDaSemana) {
     $array = [
         "0" => "DOM",
@@ -37,7 +48,7 @@ function validaSeDataExiste($ano) {
         return 0;
     }
 }
-
+//FUNCAO QUE EXIBE MENSAGEM PARA USUARIO
 function exibeMesagensParaUsuario($numeroMensagem) {
     $array = [
         "0" => "CALENDARIO ESCOLAR GERADO COM SUCESSO",
@@ -45,12 +56,13 @@ function exibeMesagensParaUsuario($numeroMensagem) {
         "2" => "DATA NAO LETIVA,REGISTRADA COM SUCESSO",
         "3" => "OCORREU UM ERRO AO TENTAR REGISTRO A DATA",
         "505" => "ERRO AO TENTAR SE COMUNICAR COM O BANCO",
-        "5" => "SEX",
+        "5" => "ATENCAO! ESSE DIA 'NÃO LETIVO', JA ESTAR CADASTRADO",
         "6" => "SAB",
     ];
     return $array[$numeroMensagem];
 }
 
+//FUNCAO QUE RETORNA STRIN EM MAIUSCULO
 function converteStringParaMaiusculo($string) {
     return strtoupper($string);
 }
