@@ -82,6 +82,43 @@ class CalendarioEscolarDao {
             return 0;
         }
     }
+    public function geraDiaLetivo() {
+        $contadorDiaLetivo = 0;
+        $contadorHoraAula = 0;
+        $idCalendarioEscola = "";
+        $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL = 0 AND STATUS = 1";
+        $result = mssql_query($select);
+        $dataCalendario = "vazio";
+        if ($result) {
+            while ($linha = mssql_fetch_array($result)) {
+                $idCalendarioEscola = $linha['ID'];
+                if ($dataCalendario == "vazio") {
+                    $dataCalendario = $linha['DATADIA'];
+                    $contadorDiaLetivo += 1;
+                    $contadorHoraAula++;
+                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO = $contadorDiaLetivo, HDLETIVO = $contadorHoraAula WHERE ID = $idCalendarioEscola";
+                    mssql_query($update);
+                }
+                elseif ($dataCalendario == $linha['DATADIA']) {
+                    $contadorHoraAula ++;
+                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO = $contadorDiaLetivo, HDLETIVO = $contadorHoraAula WHERE ID = $idCalendarioEscola";
+                    mssql_query($update);
+                }
+                elseif ($dataCalendario != "vazio" && $dataCalendario != $linha['DATADIA']) {
+                    $contadorDiaLetivo += 1;
+                    $contadorHoraAula ++;
+                    $dataCalendario = $linha['DATADIA'];
+                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO = $contadorDiaLetivo, HDLETIVO = $contadorHoraAula WHERE ID = $idCalendarioEscola";
+                    mssql_query($update);
+                }
+            }
+            return 6;
+        }
+        else {
+            return 505;
+        }
+    }
+
     //FUNCAO QUE FECHA BANCO
     public function fechaBanco() {
         mssql_close($this->conexao);

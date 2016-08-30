@@ -39,12 +39,11 @@
    $diaNaoLetivo->set_diaSemana(retornaDiaDaSemana($dia));
    $diaNaoLetivo->set_status('A');
    
-   $numeroDaMensagem = $dao->inseriDiaNaoLetivo($diaNaoLetivo);
-   $mensagem = exibeMesagensParaUsuario($numeroDaMensagem);
+   echo $numeroDaMensagem = $dao->inseriDiaNaoLetivo($diaNaoLetivo);
+   echo $mensagem = exibeMesagensParaUsuario($numeroDaMensagem);
    $dao->fechaBanco();
-   
-   echo "<script>window.location='diasNaoLetivos.php';alert('$mensagem');</script>";
-  
+   echo "<script>window.location='index.php';alert('$mensagem');</script>";
+  ?>
    
   
  

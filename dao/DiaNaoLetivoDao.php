@@ -31,7 +31,6 @@ class DiaNaoLetivoDao {
 
     //FUNCAO QUE INSERI DADOS NO BANCO
     public function inseriDiaNaoLetivo(DiaNaoLetivo $diaNaoLetivo) {
-
         //ARRAY COM TODOS OS DADOS DO OBJETO DIANAOLETIVO
         $arrayDados = array(
             $diaNaoLetivo->get_descricao(), $diaNaoLetivo->get_data(), $diaNaoLetivo->get_horaInicial(), $diaNaoLetivo->get_horaFinal(),
@@ -39,16 +38,16 @@ class DiaNaoLetivoDao {
         );
         // SELECT NO BANCO SQL 
         $meDia = $rest = substr($diaNaoLetivo->get_data(), 5, 9);
-        if ($this->verificaSeDataExiste($meDia)) {
+        if ($this->verificaSeDataExiste($meDia) == 1) {
             return 5;
         } 
-        else {
+        elseif($this->verificaSeDataExiste($meDia) == 0){
             // INSERT NO BANCO SQL 
             $select = "INSERT dbo.PHE_DIAS_NAO_LETIVOS (DESCRICAO,DATA,HORINI,HORFIM,CODTURNO,CODFILIAL,CODLETIVO,STATUS,DIASEMANA)"
                     . "VALUES ('$arrayDados[0]','$arrayDados[1]','$arrayDados[2]','$arrayDados[3]',$arrayDados[4],$arrayDados[5],0,'$arrayDados[6]','$arrayDados[7]')";
             $sucesso = mssql_query($select);
-
             if ($sucesso) {
+                
                 $mesDia = $rest = substr($diaNaoLetivo->get_data(), 5, 9);
                 //UPDATE NO BANCO SQL SERVER
                 $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET STATUS = 0, FNL = 1, DESCRICAO = '$arrayDados[0]' WHERE DATADIA LIKE '%$mesDia';";
@@ -77,9 +76,9 @@ class DiaNaoLetivoDao {
                 $contador ++;
             }
             if ($contador != 0) {
-                return true;
+                return 1;
             } else {
-                return false;
+                return 0;
             }
         } else {
             return 505;

@@ -1,5 +1,12 @@
 <?php
-// 30/08/2016
+/*
+ * CLASSE DiaNaoLetivoDao
+ * OJETIVO : RESPOSAVEL POR TODA A COMUNICACAO COM O BANCO DE DADOS
+ * CRIADA : 25/08/2016
+ * ULTIMA ATUALIZACAO : 30/08/2016
+ * 
+ * DS -> LEANDRO BRITO ;)
+ */
 class DiaNaoLetivo {
     private $descricao;
     private $horaInicial;
