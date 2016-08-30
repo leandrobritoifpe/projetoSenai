@@ -4,7 +4,7 @@
  * VARIAVEIS PARA SUBSTITUIR
  * 
  * $_POST['DESCRICAO'],
- * $_POSTA ['DATA'],
+ * $_POSTA ['DATA'],dd
  * 
  */
 

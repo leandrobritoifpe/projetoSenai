@@ -14,7 +14,7 @@
         <div class=�container�>
             <form method="post" action="cadastraDiaNaoLetivo.php">
                 <p>
-                    DATA INICAL: <br />
+                    DATA INICALl: <br />
                     <input type="texte" id="DATAINI" name="DATA" />
                 </p>
                 
