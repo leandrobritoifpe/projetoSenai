@@ -70,9 +70,9 @@ class CalendarioEscolarDao {
             for ($index = 0; $index < count($arrayCodigoTurno); $index++) {
                 
                 //INSERT NO BANCO DE DADOS SQL
-                $insert = "INSERT dbo.PHE_CALENDARIO_ESCOLA (DESCRICAO,DATADIA,HORINI,HORFIM,CODTURNO,CODFILIAL,CODLETIVO,STATUS,DIASEMANA,AULA)"
-                        . "VALUES ('$arrayDados[0]','$arrayDados[1]','$arrayHoraIni[$index]','$arrayHoraFini[$index]',$arrayCodigoTurno[$index],$arrayDados[2],0,'$arrayDados[3]','$arrayDados[4]','$arrayAula[$index]')";
-                $result = mssql_query($insert);
+               $insert = "INSERT dbo.PHE_CALENDARIO_ESCOLA (DESCRICAO,DATADIA,HORINI,HORFIM,CODTURNO,CODFILIAL,DLETIVO,STATUS,DIASEMANA,AULA,FNL,HDLETIVO)"
+                        . "VALUES ('$arrayDados[0]','$arrayDados[1]','$arrayHoraIni[$index]','$arrayHoraFini[$index]',$arrayCodigoTurno[$index],$arrayDados[2],0,'$arrayDados[3]','$arrayDados[4]','$arrayAula[$index]',0,0)";
+               $result = mssql_query($insert);
                 if ($result) {
                     $cont++;
                 }

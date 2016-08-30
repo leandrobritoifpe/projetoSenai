@@ -51,7 +51,7 @@ class DiaNaoLetivoDao {
             if ($sucesso) {
                 $mesDia = $rest = substr($diaNaoLetivo->get_data(), 5, 9);
                 //UPDATE NO BANCO SQL SERVER
-                $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET STATUS = 'I', DESCRICAO = '$arrayDados[0]' WHERE DATADIA LIKE '%$mesDia';";
+                $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET STATUS = 0, FNL = 1, DESCRICAO = '$arrayDados[0]' WHERE DATADIA LIKE '%$mesDia';";
                 $sucesso = mssql_query($update);
                 if ($sucesso) {
                     return 2;

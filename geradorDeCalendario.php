@@ -23,7 +23,7 @@ if (isset($_POST['DATAFIN'])) {
     $calendarioEscolar = new CalendarioEscolar();
     $calendarioEscolar->set_descricao(converteStringParaMaiusculo($_POST['DESCRICAO']));
     $calendarioEscolar->set_codFilial(1);
-    $calendarioEscolar->set_status('A');
+    $calendarioEscolar->set_status(1);
     
     $dataInicial = $_POST['DATAINI'];
     $dataFinal = $_POST['DATAFIN'];
@@ -110,11 +110,11 @@ if (isset($_POST['DATAFIN'])) {
     $dao->fechaBanco();
     if ($cont != 0) {
         $mensagem = exibeMesagensParaUsuario(0);
-      echo "<script>window.location='index.php';alert('$mensagem');</script>";
+        echo "<script>window.location='index.php';alert('$mensagem');</script>";
     }
         
     else{
       $mensagem = exibeMesagensParaUsuario(1);
-       echo "<script>window.location='index.php';alert('$mensagem');</script>";
+      echo "<script>window.location='index.php';alert('$mensagem');</script>";
 }
 }

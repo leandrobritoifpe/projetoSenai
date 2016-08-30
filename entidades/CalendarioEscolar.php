@@ -1,8 +1,7 @@
 <?php
 
 class CalendarioEscolar {
-   // private $dataInicial;
-    //private $dataFinal;
+  
     private $codFilial;
     private $descricao;
     private $status;
@@ -10,18 +9,7 @@ class CalendarioEscolar {
     private $nomeDoDia;
     private $dataDia;
     
-//    public function set_dataInicial($dataInical) {
-//        $this->dataInicial = $dataInical;
-//    }
-//    public function get_dataInicial() {
-//        return $this->dataInicial;
-//    }
-//    public function set_dataFinal($dataFinal) {
-//        $this->dataFinal = $dataFinal;
-//    }
-//    public function get_dataFinal() {
-//        return $this->dataFinal;
-//    }
+
     public function set_codFilial($codFilial) {
         $this->codFilial = $codFilial;
     }
