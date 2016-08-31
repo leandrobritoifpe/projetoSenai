@@ -38,10 +38,10 @@ class DiaNaoLetivoDao {
         );
         // SELECT NO BANCO SQL 
         $meDia = $rest = substr($diaNaoLetivo->get_data(), 5, 9);
-        if ($this->verificaSeDataExiste($meDia) == 1) {
+        if ($this->verificaSeDataExiste($meDia, $arrayDados[5]) == 1) {
             return 5;
         } 
-        elseif($this->verificaSeDataExiste($meDia) == 0){
+        elseif($this->verificaSeDataExiste($meDia,$arrayDados[5]) == 0){
             // INSERT NO BANCO SQL 
             $select = "INSERT dbo.PHE_DIAS_NAO_LETIVOS (DESCRICAO,DATA,HORINI,HORFIM,CODTURNO,CODFILIAL,CODLETIVO,STATUS,DIASEMANA)"
                     . "VALUES ($arrayDados[0],'$arrayDados[1]','$arrayDados[2]','$arrayDados[3]',$arrayDados[4],$arrayDados[5],0,'$arrayDados[6]','$arrayDados[7]')";
@@ -50,7 +50,7 @@ class DiaNaoLetivoDao {
                 
                 $mesDia = $rest = substr($diaNaoLetivo->get_data(), 5, 9);
                 //UPDATE NO BANCO SQL SERVER
-                $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET STATUS = 0, FNL = 1, FNL_CT = 1, DESCRICAO = $arrayDados[0], STATUS_CT = 0, DESCRICAO_CT = $arrayDados[0] WHERE DATADIA LIKE '%$mesDia';";
+                $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET STATUS = 0, FNL = 1, FNL_CT = 1, DESCRICAO = $arrayDados[0], STATUS_CT = 0, DESCRICAO_CT = $arrayDados[0] WHERE DATADIA LIKE '%$mesDia' AND CODFILIAL = $arrayDados[5]";
                 $sucesso = mssql_query($update);
                 if ($sucesso) {
                     return 2;
@@ -62,8 +62,8 @@ class DiaNaoLetivoDao {
             }
         }
     }
-    public function inseriPeridoNaoLetivo($dataInicial, $dataFinal, $descricao){
-       $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DESCRICAO_CT = $descricao, STATUS_CT  = 0, DLETIVO_CT = 0, HDLETIVO_CT = 0, FNL_CT = 1 WHERE DATADIA BETWEEN '$dataInicial' AND '$dataFinal'";
+    public function inseriPeridoNaoLetivo($dataInicial, $dataFinal, $descricao, $codFilial){
+       $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DESCRICAO_CT = $descricao, STATUS_CT  = 0, DLETIVO_CT = 0, HDLETIVO_CT = 0, FNL_CT = 1 WHERE DATADIA BETWEEN '$dataInicial' AND '$dataFinal' AND CODFILIAL = $codFilial";
        $result = mssql_query($update);
        if ($result) {
             return 7;
@@ -78,9 +78,9 @@ class DiaNaoLetivoDao {
     }
     
     // FUNCAO QUE VERIFICA SE DATA DO DIA NOA LETIVO JA EXISTE
-    private function verificaSeDataExiste($data) {
+    private function verificaSeDataExiste($data, $codFilial) {
         $contador = 0;
-        $sql = mssql_query("SELECT * FROM PHE_DIAS_NAO_LETIVOS WHERE DATA LIKE '%$data';");
+        $sql = mssql_query("SELECT * FROM PHE_DIAS_NAO_LETIVOS WHERE DATA LIKE '%$data' AND CODFILIAL = $codFilial");
         if ($sql) {
             while ($row = mssql_fetch_array($sql)) {
                 $contador ++;

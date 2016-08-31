@@ -82,33 +82,39 @@ class CalendarioEscolarDao {
             return 0;
         }
     }
-    public function geraDiaLetivo() {
+    public function geraDiaLetivo($codFilial) {
         $contadorDiaLetivo = 0;
         $contadorHoraAula = 0;
         $idCalendarioEscola = "";
-        $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL = 0 AND STATUS = 1";
+        $contador = 0;
+        $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL = 0 AND STATUS = 1 AND CODFILIAL = $codFilial";
         $result = mssql_query($select);
-        $dataCalendario = "vazio";
-        if ($result) {
+        while ($row = mssql_fetch_array($result)) {
+            $contador+= +1;
+        }
+        $dataCalendario = "v";
+        if ($contador != 0) {
+             $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL = 0 AND STATUS = 1 AND CODFILIAL = $codFilial";
+             $result = mssql_query($select);
             while ($linha = mssql_fetch_array($result)) {
                 $idCalendarioEscola = $linha['ID'];
-                if ($dataCalendario == "vazio") {
+                if ($dataCalendario == "v") {
                     $dataCalendario = $linha['DATADIA'];
                     $contadorDiaLetivo += 1;
                     $contadorHoraAula++;
-                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO = $contadorDiaLetivo, HDLETIVO = $contadorHoraAula WHERE ID = $idCalendarioEscola";
+                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO = $contadorDiaLetivo, HDLETIVO = $contadorHoraAula WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
                     mssql_query($update);
                 }
                 elseif ($dataCalendario == $linha['DATADIA']) {
                     $contadorHoraAula ++;
-                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO = $contadorDiaLetivo, HDLETIVO = $contadorHoraAula WHERE ID = $idCalendarioEscola";
+                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO = $contadorDiaLetivo, HDLETIVO = $contadorHoraAula WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
                     mssql_query($update);
                 }
-                elseif ($dataCalendario != "vazio" && $dataCalendario != $linha['DATADIA']) {
+                elseif ($dataCalendario != "v" && $dataCalendario != $linha['DATADIA']) {
                     $contadorDiaLetivo += 1;
                     $contadorHoraAula ++;
                     $dataCalendario = $linha['DATADIA'];
-                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO = $contadorDiaLetivo, HDLETIVO = $contadorHoraAula WHERE ID = $idCalendarioEscola";
+                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO = $contadorDiaLetivo, HDLETIVO = $contadorHoraAula WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
                     mssql_query($update);
                 }
             }
@@ -118,33 +124,39 @@ class CalendarioEscolarDao {
             return 505;
         }
     }
-    public function geraDiaLetivoCursoTecnico() {
+    public function geraDiaLetivoCursoTecnico($codFilial) {
         $contadorDiaLetivo = 0;
         $contadorHoraAula = 0;
         $idCalendarioEscola = "";
-        $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL_CT = 0 AND STATUS_CT = 1";
+        $contador = 0;
+        $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL_CT = 0 AND STATUS_CT = 1 AND CODFILIAL = $codFilial";
         $result = mssql_query($select);
         $dataCalendario = "vazio";
-        if ($result) {
+        while ($row = mssql_fetch_array($result)) {
+            $contador+= +1;
+        }
+        if ($contador != 0) {
+            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL_CT = 0 AND STATUS_CT = 1 AND CODFILIAL = $codFilial";
+            $result = mssql_query($select);
             while ($linha = mssql_fetch_array($result)) {
                 $idCalendarioEscola = $linha['ID'];
                 if ($dataCalendario == "vazio") {
                     $dataCalendario = $linha['DATADIA'];
                     $contadorDiaLetivo += 1;
                     $contadorHoraAula++;
-                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_CT = $contadorDiaLetivo, HDLETIVO_CT = $contadorHoraAula WHERE ID = $idCalendarioEscola";
+                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_CT = $contadorDiaLetivo, HDLETIVO_CT = $contadorHoraAula WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
                     mssql_query($update);
                 }
                 elseif ($dataCalendario == $linha['DATADIA']) {
                     $contadorHoraAula ++;
-                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_CT = $contadorDiaLetivo, HDLETIVO_CT = $contadorHoraAula WHERE ID = $idCalendarioEscola";
+                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_CT = $contadorDiaLetivo, HDLETIVO_CT = $contadorHoraAula WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
                     mssql_query($update);
                 }
                 elseif ($dataCalendario != "vazio" && $dataCalendario != $linha['DATADIA']) {
                     $contadorDiaLetivo += 1;
                     $contadorHoraAula ++;
                     $dataCalendario = $linha['DATADIA'];
-                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_CT = $contadorDiaLetivo, HDLETIVO_CT = $contadorHoraAula WHERE ID = $idCalendarioEscola";
+                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_CT = $contadorDiaLetivo, HDLETIVO_CT = $contadorHoraAula WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
                     mssql_query($update);
                 }
             }

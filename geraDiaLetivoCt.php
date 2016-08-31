@@ -14,6 +14,6 @@ include './gerenciadorDeFuncoes.php';
 
 $dao = new CalendarioEscolarDao();
 $dao->abrirConexao();
-$mensagem = exibeMesagensParaUsuario($dao->geraDiaLetivoCursoTecnico());
+$mensagem = exibeMesagensParaUsuario($dao->geraDiaLetivoCursoTecnico(1));
 $dao->fechaBanco();
 echo "<script>window.location='index.php';alert('$mensagem');</script>";
