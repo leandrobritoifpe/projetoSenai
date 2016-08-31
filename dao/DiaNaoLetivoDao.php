@@ -3,7 +3,7 @@
  * CLASSE DiaNaoLetivoDao
  * OJETIVO : RESPOSAVEL POR TODA A COMUNICACAO COM O BANCO DE DADOS
  * CRIADA : 25/08/2016
- * ULTIMA ATUALIZACAO : 30/08/2016
+ * ULTIMA ATUALIZACAO : 31/08/2016
  * 
  * DS -> LEANDRO BRITO ;)
  */
@@ -44,13 +44,13 @@ class DiaNaoLetivoDao {
         elseif($this->verificaSeDataExiste($meDia) == 0){
             // INSERT NO BANCO SQL 
             $select = "INSERT dbo.PHE_DIAS_NAO_LETIVOS (DESCRICAO,DATA,HORINI,HORFIM,CODTURNO,CODFILIAL,CODLETIVO,STATUS,DIASEMANA)"
-                    . "VALUES ('$arrayDados[0]','$arrayDados[1]','$arrayDados[2]','$arrayDados[3]',$arrayDados[4],$arrayDados[5],0,'$arrayDados[6]','$arrayDados[7]')";
+                    . "VALUES ($arrayDados[0],'$arrayDados[1]','$arrayDados[2]','$arrayDados[3]',$arrayDados[4],$arrayDados[5],0,'$arrayDados[6]','$arrayDados[7]')";
             $sucesso = mssql_query($select);
             if ($sucesso) {
                 
                 $mesDia = $rest = substr($diaNaoLetivo->get_data(), 5, 9);
                 //UPDATE NO BANCO SQL SERVER
-                $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET STATUS = 0, FNL = 1, DESCRICAO = '$arrayDados[0]' WHERE DATADIA LIKE '%$mesDia';";
+                $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET STATUS = 0, FNL = 1, FNL_CT = 1, DESCRICAO = $arrayDados[0], STATUS_CT = 0, DESCRICAO_CT = $arrayDados[0] WHERE DATADIA LIKE '%$mesDia';";
                 $sucesso = mssql_query($update);
                 if ($sucesso) {
                     return 2;
@@ -60,6 +60,16 @@ class DiaNaoLetivoDao {
             } else {
                 return 505;
             }
+        }
+    }
+    public function inseriPeridoNaoLetivo($dataInicial, $dataFinal, $descricao){
+       $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DESCRICAO_CT = $descricao, STATUS_CT  = 0, DLETIVO_CT = 0, HDLETIVO_CT = 0, FNL_CT = 1 WHERE DATADIA BETWEEN '$dataInicial' AND '$dataFinal'";
+       $result = mssql_query($update);
+       if ($result) {
+            return 7;
+        }
+        else{
+            return 505;
         }
     }
     //FUNCAO QUE FECHA BANCO

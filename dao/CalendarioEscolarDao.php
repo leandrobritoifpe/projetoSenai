@@ -70,8 +70,8 @@ class CalendarioEscolarDao {
             for ($index = 0; $index < count($arrayCodigoTurno); $index++) {
                 
                 //INSERT NO BANCO DE DADOS SQL
-               $insert = "INSERT dbo.PHE_CALENDARIO_ESCOLA (DESCRICAO,DATADIA,HORINI,HORFIM,CODTURNO,CODFILIAL,DLETIVO,STATUS,DIASEMANA,AULA,FNL,HDLETIVO)"
-                        . "VALUES ('$arrayDados[0]','$arrayDados[1]','$arrayHoraIni[$index]','$arrayHoraFini[$index]',$arrayCodigoTurno[$index],$arrayDados[2],0,'$arrayDados[3]','$arrayDados[4]','$arrayAula[$index]',0,0)";
+               $insert = "INSERT dbo.PHE_CALENDARIO_ESCOLA (DESCRICAO,DATADIA,HORINI,HORFIM,CODTURNO,CODFILIAL,DLETIVO,STATUS,DIASEMANA,AULA,FNL,HDLETIVO,STATUS_CT,DLETIVO_CT,HDLETIVO_CT,DESCRICAO_CT,FNL_CT)"
+                        . "VALUES ($arrayDados[0],'$arrayDados[1]','$arrayHoraIni[$index]','$arrayHoraFini[$index]',$arrayCodigoTurno[$index],$arrayDados[2],0,'$arrayDados[3]','$arrayDados[4]','$arrayAula[$index]',0,0,1,0,0,$arrayDados[0],0)";
                $result = mssql_query($insert);
                 if ($result) {
                     $cont++;
@@ -113,6 +113,42 @@ class CalendarioEscolarDao {
                 }
             }
             return 6;
+        }
+        else {
+            return 505;
+        }
+    }
+    public function geraDiaLetivoCursoTecnico() {
+        $contadorDiaLetivo = 0;
+        $contadorHoraAula = 0;
+        $idCalendarioEscola = "";
+        $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL_CT = 0 AND STATUS_CT = 1";
+        $result = mssql_query($select);
+        $dataCalendario = "vazio";
+        if ($result) {
+            while ($linha = mssql_fetch_array($result)) {
+                $idCalendarioEscola = $linha['ID'];
+                if ($dataCalendario == "vazio") {
+                    $dataCalendario = $linha['DATADIA'];
+                    $contadorDiaLetivo += 1;
+                    $contadorHoraAula++;
+                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_CT = $contadorDiaLetivo, HDLETIVO_CT = $contadorHoraAula WHERE ID = $idCalendarioEscola";
+                    mssql_query($update);
+                }
+                elseif ($dataCalendario == $linha['DATADIA']) {
+                    $contadorHoraAula ++;
+                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_CT = $contadorDiaLetivo, HDLETIVO_CT = $contadorHoraAula WHERE ID = $idCalendarioEscola";
+                    mssql_query($update);
+                }
+                elseif ($dataCalendario != "vazio" && $dataCalendario != $linha['DATADIA']) {
+                    $contadorDiaLetivo += 1;
+                    $contadorHoraAula ++;
+                    $dataCalendario = $linha['DATADIA'];
+                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_CT = $contadorDiaLetivo, HDLETIVO_CT = $contadorHoraAula WHERE ID = $idCalendarioEscola";
+                    mssql_query($update);
+                }
+            }
+            return 8;
         }
         else {
             return 505;

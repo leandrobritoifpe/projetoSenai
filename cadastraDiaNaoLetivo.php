@@ -3,7 +3,7 @@
 /*ARQUVOS CadastraDiaNaoLetivo
  * OBJETIVO: SERVIR DE CONTROLE PARA O DAO
  * CRIADA: 25/08/2016
- * ULTIMA ATUALIZACAO : 30/08/2016
+ * ULTIMA ATUALIZACAO : 31/08/2016
  * 
  * DS -> LEANDRO BRITO
  */
@@ -15,7 +15,7 @@
    include_once './entidades/DiaNaoLetivo.php';
    
    //RECEBENDO PARAMENTRO
-   $descricao = converteStringParaMaiusculo($_POST['DESCRICAO']);
+   
    $data = $_POST['DATA'];
    
    // CRIANOD ARRAY DE DIAS PARA COMPARA COM A VARIAVEL RECEBIDA
@@ -30,7 +30,7 @@
    
    //INSTANCIANDO OBJETO DIANOALETIVO
    $diaNaoLetivo = new DiaNaoLetivo();
-   $diaNaoLetivo->set_descricao($descricao);
+   $diaNaoLetivo->set_descricao(2);
    $diaNaoLetivo->set_data($data);
    $diaNaoLetivo->set_codFilial(1);
    $diaNaoLetivo->set_codTurno(1);

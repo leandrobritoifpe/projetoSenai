@@ -58,6 +58,8 @@ function exibeMesagensParaUsuario($numeroMensagem) {
         "505" => "ERRO AO TENTAR SE COMUNICAR COM O BANCO, ENTRE EM CONTATO COM O ADMINISTRADOR DO SISTEMA",
         "5" => "ATENCAO! ESSE DIA 'NÃO LETIVO', JA ESTAR CADASTRADO",
         "6" => "DIAS LETIVOS GERADOS COM SUCESSO",
+         "7" => "PERIDO CADASTRADO COM SUCESSO",
+        "8" => "DIAS LETIVOS DO CURSO TECNICO, GERADOS COM SUCESSO",
     ];
     return $array[$numeroMensagem];
 }

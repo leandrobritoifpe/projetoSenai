@@ -3,7 +3,7 @@
  * ARQUVIO geradorDeCalendario
  * OBNJETIVO: SERVIR DE CONTROLE PARA DAO
  * CRIADO : 25/08/2016
- * ULTIMA ATUALIZACAO : 30/08/2016
+ * ULTIMA ATUALIZACAO : 31/08/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -21,7 +21,7 @@ if (isset($_POST['DATAFIN'])) {
     
     //INSTANCIANDO VARIAVEL CALENDARIO
     $calendarioEscolar = new CalendarioEscolar();
-    $calendarioEscolar->set_descricao(converteStringParaMaiusculo($_POST['DESCRICAO']));
+    $calendarioEscolar->set_descricao(1);
     $calendarioEscolar->set_codFilial(1);
     $calendarioEscolar->set_status(1);
     
