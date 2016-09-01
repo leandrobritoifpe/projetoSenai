@@ -95,7 +95,7 @@ class DiaNaoLetivoDao {
             $diaNaoLetivo->get_dataFinal(),$diaNaoLetivo->get_descricao()
         );
         $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DESCRICAO = $arrayDados[4],DESCRICAO_CT = $arrayDados[4], STATUS = 0,STATUS_CT = 0, FNL = 1, FNL_CT = 1 WHERE DATADIA BETWEEN '$arrayDados[2]' AND '$arrayDados[3]' AND CODTURNO = $arrayDados[1] AND CODFILIAL = $arrayDados[0]";
-        $result = mssql($update);
+        $result = mssql_query($update);
         if($result){
             return 12;
         }
