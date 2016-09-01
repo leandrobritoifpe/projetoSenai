@@ -24,6 +24,7 @@ if (isset($_POST['DATAFIN'])) {
     $calendarioEscolar->set_descricao(1);
     $calendarioEscolar->set_codFilial(1);
     $calendarioEscolar->set_status(1);
+    $calendarioEscolar->set_usuarioCadastrante('DARIO');
     
     $dataInicial = $_POST['DATAINI'];
     $dataFinal = $_POST['DATAFIN'];

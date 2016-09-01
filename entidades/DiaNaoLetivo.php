@@ -17,6 +17,7 @@ class DiaNaoLetivo {
     private $codFilial;
     private $status;
     private $diaDaSemana;
+    private $usuarioCadastrante;
     
   public function set_descricao($Vdescricao){
     $this->descricao = $Vdescricao;
@@ -71,6 +72,12 @@ class DiaNaoLetivo {
   }
   public function get_diaSemana(){
       return $this->diaDaSemana;
+  }
+  public function set_usuarioCadastrante($usuarioCadatrante){
+      $this->usuarioCadastrante = $usuarioCadatrante;
+  }
+  public function get_usuarioCadastrante() {
+      return $this->usuarioCadastrante;
   }
  
 }

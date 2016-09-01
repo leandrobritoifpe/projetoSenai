@@ -16,6 +16,7 @@ class CalendarioEscolar {
     private $diaDaSemana;
     private $nomeDoDia;
     private $dataDia;
+    private $usuarioCadastrante;
     
 
     public function set_codFilial($codFilial) {
@@ -54,5 +55,10 @@ class CalendarioEscolar {
     public function get_dataDia() {
         return $this->dataDia;
     }
-    
+    public function set_usuarioCadastrante($usuarioCadastrante){
+        $this->usuarioCadastrante = $usuarioCadastrante;
+    }
+    public function get_usuarioCadastrante() {
+        return $this->usuarioCadastrante; 
+    }
 }
