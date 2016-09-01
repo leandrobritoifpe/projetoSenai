@@ -1,4 +1,12 @@
 <?php
+
+/* ARQUVOS CadastraDiaNaoLetivo
+ * OBJETIVO: SERVIR DE CONTROLE PARA O DAO
+ * CRIADA: 31/08/2016
+ * ULTIMA ATUALIZACAO : 01/08/2016
+ * 
+ * DS -> LEANDRO BRITO */
+
 include './dao/DiaNaoLetivoDao.php';
 include './gerenciadorDeFuncoes.php';
 
@@ -11,6 +19,7 @@ include_once './entidades/DiaNaoLetivo.php';
 $dao = new DiaNaoLetivoDao();
 $dao->abreBanco();
 
+//INSTANCIADO OBJETO
 $diaNaoLetivo = new DiaNaoLetivo();
 $diaNaoLetivo->set_codFilial($VcodFilial);
 $diaNaoLetivo->set_codTurno($VcodTurno);

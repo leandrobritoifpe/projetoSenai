@@ -4,7 +4,7 @@
  * CLASSE CalendarioEscolarDao
  * OBJETIVO: REALIZAR TODA AS COMUNICAÇOES COM O BANCO DE DADOS SQL SERVER
  * CRIADA: 25/08/2016
- * ULTIMA ATUALIZACAO : 30/08/2016
+ * ULTIMA ATUALIZACAO : 01/08/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -83,9 +83,9 @@ class CalendarioEscolarDao {
             return 0;
         }
     }
-
+    //FUNÇÃO QUE CRIA DIAS LETIVOS
     public function geraDiaLetivo($codFilial) {
-
+        //VERIFICANDO SE A FUNÇÃO QUE LIMPA OS DIAS LEVITOS FUNCIONOU
         if ($this->zeraTodosDiasLetivos($codFilial) == true) {
             $contadorDiaLetivo = 0;
             $idCalendarioEscola = "";
@@ -102,7 +102,10 @@ class CalendarioEscolarDao {
             if ($contador != 0) {
                 $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL = 0 AND STATUS = 1 AND CODFILIAL = $codFilial";
                 $result = mssql_query($select);
+                
+                //VERIFICANDO SE A FUNÇÃO QUE CRIAR ARRAY COM OS CODIGOS DOS TURNOS DEU CERTO
                 $arrayCodigoTurno = $this->retornaArrayComTodosOsTurno($codFilial);
+                
                 if ($arrayCodigoTurno[0] != 505) {
                     for ($index = 0; $index < count($arrayCodigoTurno); $index++) {
                         $arrayContadorTurno[$index] = 0;
@@ -155,7 +158,7 @@ class CalendarioEscolarDao {
             return 505;
         }
     }
-
+    //FUNÇÃO QUE CRIA DIAS LETIVOS PARA CURSO TECNICOS
     private function geraDiaLetivoCursoTecnico($codFilial) {
 
         $contadorDiaLetivo = 0;
@@ -172,7 +175,10 @@ class CalendarioEscolarDao {
         if ($contador != 0) {
             $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL_CT = 0 AND STATUS_CT = 1 AND CODFILIAL = $codFilial";
             $result = mssql_query($select);
+            
+            //VERIFICANDO SE A FUNÇÃO QUE CRIAR ARRAY COM OS CODIGOS DOS TURNOS DEU CERTO
             $arrayCodigoTurno = $this->retornaArrayComTodosOsTurno($codFilial);
+            
             if ($arrayCodigoTurno[0] != 505) {
                 for ($index = 0; $index < count($arrayCodigoTurno); $index++) {
                     $arrayContadorTurno[$index] = 0;
@@ -210,7 +216,7 @@ class CalendarioEscolarDao {
             return 505;
         }
     }
-
+    //METODO QUE RETORNA UM ARRY COM TODOS OS CODIGO DOS TURNOS DA ESCOLA
     private function retornaArrayComTodosOsTurno($codFilial) {
         $sql = "SELECT CODTURNO FROM PHE_STURNO WHERE CODFILIAL = $codFilial";
         $result = mssql_query($sql);
@@ -232,7 +238,7 @@ class CalendarioEscolarDao {
             return $arrayCodigoTuno[0] = 505;
         }
     }
-
+    //METODO QUE ZERA TODOS OS DIAS LETIVOS JA REGISTRADOS
     private function zeraTodosDiasLetivos($codFilial) {
         $instrucao = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO = 0, DLETIVO_CT = 0, HDLETIVO = 0, HDLETIVO_CT = 0 WHERE CODFILIAL = $codFilial";
         $resultado = mssql_query($instrucao);

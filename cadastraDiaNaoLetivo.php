@@ -3,7 +3,7 @@
 /* ARQUVOS CadastraDiaNaoLetivo
  * OBJETIVO: SERVIR DE CONTROLE PARA O DAO
  * CRIADA: 25/08/2016
- * ULTIMA ATUALIZACAO : 31/08/2016
+ * ULTIMA ATUALIZACAO : 01/08/2016
  * 
  * DS -> LEANDRO BRITO
  */
@@ -45,9 +45,12 @@ echo $numeroDaMensagem = $dao->inseriDiaNaoLetivo($diaNaoLetivo);
 $mensagem = exibeMesagensParaUsuario($numeroDaMensagem);
 $dao->fechaBanco();
 
+//VERIFICANDO SE A INSERÇÃO DA DATA DEU CERTO, PARA PODE REGERAR OS DIAS LETIVOS
 if ($numeroDaMensagem == 2) {
+    //INSTANCIADO CALENDARIO DAO
     $daoCalendario = new CalendarioEscolarDao();
     $daoCalendario->abrirConexao();
+    //RECEBENDO O RETORNO DO METODO GERAR DIA LETIVO
     $numeroDaMensagem = $daoCalendario->geraDiaLetivo(1);
     $mensagem = exibeMesagensParaUsuario($numeroDaMensagem);
     $daoCalendario->fechaBanco();

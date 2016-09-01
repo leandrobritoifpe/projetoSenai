@@ -3,7 +3,7 @@
  * CLASSE DiaNaoLetivoDao
  * OJETIVO : RESPOSAVEL POR TODA A COMUNICACAO COM O BANCO DE DADOS
  * CRIADA : 25/08/2016
- * ULTIMA ATUALIZACAO : 31/08/2016
+ * ULTIMA ATUALIZACAO : 01/08/2016
  * 
  * DS -> LEANDRO BRITO ;)
  */
@@ -62,6 +62,7 @@ class DiaNaoLetivoDao {
             }
         }
     }
+    //METODO QUE INSERI PERIODO NÃO LETIVO, SOMENTE PARA CURSO TECNICOS
     public function inseriPeridoNaoLetivo($dataInicial, $dataFinal, $descricao, $codFilial){
        $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DESCRICAO_CT = $descricao, STATUS_CT  = 0, DLETIVO_CT = 0, HDLETIVO_CT = 0, FNL_CT = 1 WHERE DATADIA BETWEEN '$dataInicial' AND '$dataFinal' AND CODFILIAL = $codFilial";
        $result = mssql_query($update);
@@ -76,6 +77,7 @@ class DiaNaoLetivoDao {
     public function fechaBanco() {
         mssql_close($this->conexao);
     }
+    // METODO QUE INSERI PERIDO NAO LETIVO PARA TODA ESCOLA
     public function inseriDiaNaoLetivoPorPerido($codFilial,$dataInicial, $dataFinal,$descricao){
         $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET STATUS = 0, FNL = 1, STATUS_CT = 0, FNL_CT = 1, DESCRICAO = $descricao, DESCRICAO_CT = $descricao WHERE DATADIA BETWEEN '$dataInicial' AND '$dataFinal' AND CODFILIAL = $codFilial";
         $restult = mssql_query($update);
@@ -86,6 +88,7 @@ class DiaNaoLetivoDao {
             return 505;
         }
     }
+    //METODO QUE INSERI DIA LETIVO POR TURNO, PARA TODA A ESCOLA
     public function inseriDiaNaoLetivoPorTurno(DiaNaoLetivo $diaNaoLetivo){
         $arrayDados = array(
             $diaNaoLetivo->get_codFilial(),$diaNaoLetivo->get_codTurno(),$diaNaoLetivo->get_dataInicial(),
