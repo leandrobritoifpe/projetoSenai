@@ -38,6 +38,7 @@
    $diaNaoLetivo->set_horaInicial('00:00:00.0000000');
    $diaNaoLetivo->set_diaSemana(retornaDiaDaSemana($dia));
    $diaNaoLetivo->set_status('A');
+   $diaNaoLetivo->set_usuarioCadastrante('DARIO');
    
    echo $numeroDaMensagem = $dao->inseriDiaNaoLetivo($diaNaoLetivo);
    echo $mensagem = exibeMesagensParaUsuario($numeroDaMensagem);
