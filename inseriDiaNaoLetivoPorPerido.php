@@ -10,18 +10,24 @@ include_once './dao/CalendarioEscolarDao.php';
  
  $dao = new DiaNaoLetivoDao();
  $dao->abreBanco();
- $resultado = $dao->inseriDiaNaoLetivoPorPerido(1, '2017-01-02', '2017-01-04', 4);
+ $resultado = $dao->inseriDiaNaoLetivoPorPerido(1, '2017-01-02', '2017-01-30', 5);
  $dao->fechaBanco();
- echo "<br>";
  if ($resultado == 7) {
      
     $daoCalendario = new CalendarioEscolarDao;
-    $dao->abreBanco();
-    echo $msg = exibeMesagensParaUsuario($daoCalendario->geraDiaLetivo(1));
+    $daoCalendario->abrirConexao();
+    $numeroMensagem = $daoCalendario->geraDiaLetivo(1);
+    $mensagem = exibeMesagensParaUsuario($numeroMensagem);
     $daoCalendario->fechaBanco();
+    if($numeroMensagem == 6){
+         echo "<script>window.location='index.php';alert('$mensagem');</script>";
+    }
+    else{
+         echo "<script>window.location='index.php';alert('DIAS NAO LETIVOS GERADOS COM SUCESSO, POREM NAO FOI POSSIL ATUALIZAR OS DIAS LETIVOS');</script>";
+    }
 }
 else{
-    echo $msg = exibeMesagensParaUsuario(7);
+    echo "<script>window.location='index.php';alert('$mensagem');</script>";
 }
 
  

@@ -146,7 +146,7 @@ class CalendarioEscolarDao {
                         return 505;
                     }
                 } elseif ($arrayCodigoTurno[0] == 505) {
-                    return 9;
+                    return 505;
                 }
             } else {
                 return 505;

@@ -4,11 +4,27 @@
    
  // INPORTANOD CLASSE 
  include_once './entidades/DiaNaoLetivo.php';
+ include_once './entidades/CalendarioEscolar.php';
+include_once './dao/CalendarioEscolarDao.php';
  
 $dao = new DiaNaoLetivoDao();
 $dao->abreBanco();
 $dataInicial = '2017-01-02';
-$dataFinal = '2017-01-15';
-$mensagem = exibeMesagensParaUsuario($dao->inseriPeridoNaoLetivo($dataInicial, $dataFinal, 3,1));
+$dataFinal = '2017-01-04';
+$numeroDaMensagem = $dao->inseriPeridoNaoLetivo($dataInicial, $dataFinal, 3,1);
+$mensagem = exibeMesagensParaUsuario($numeroDaMensagem);
 $dao->fechaBanco();
-echo "<script>window.location='index.php';alert('$mensagem');</script>";
+if ($numeroDaMensagem == 7) {
+    $daoCalendario = new CalendarioEscolarDao;
+    $daoCalendario->abrirConexao();
+    $numeroDaMensagem = $daoCalendario->geraDiaLetivo(1);
+    $mensagem = exibeMesagensParaUsuario($numeroDaMensagem);
+    $daoCalendario->fechaBanco();
+    if ($numeroDaMensagem == 6) {
+        echo "<script>window.location='index.php';alert('$mensagem');</script>";
+    } else {
+        echo "<script>window.location='index.php';alert('DIA NAO LETIVO CADASTRADO, POREM NAO FOI POSSIVEL ATUALIZAR OS DIAS LETIVOS');</script>";
+    }
+} else {
+    echo "<script>window.location='index.php';alert('$mensagem');</script>";
+}
