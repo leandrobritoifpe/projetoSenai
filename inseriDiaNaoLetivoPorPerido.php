@@ -25,6 +25,7 @@ if ($resultado == 7) {
         echo "<script>window.location='index.php';alert('DIAS NAO LETIVOS GERADOS COM SUCESSO, POREM NAO FOI POSSIL ATUALIZAR OS DIAS LETIVOS');</script>";
     }
 } else {
+    $mensagem= exibeMesagensParaUsuario(505);
     echo "<script>window.location='index.php';alert('$mensagem');</script>";
 }
 

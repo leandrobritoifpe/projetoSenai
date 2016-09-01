@@ -61,6 +61,7 @@ function exibeMesagensParaUsuario($numeroMensagem) {
          "7" => "PERIDO CADASTRADO COM SUCESSO",
         "8" => "DIAS LETIVOS DO CURSO TECNICO, GERADOS COM SUCESSO",
         "9" => "A ESCOLA AINDA NAO TEM TURNOS CADASTRADOS",
+        "12" => "DIA NÃO LETIVO DO TURNO SELECIONADO, CADASTRADO COM SUCESSO",
     ];
     return $array[$numeroMensagem];
 }

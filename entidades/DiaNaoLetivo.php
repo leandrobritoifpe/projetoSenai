@@ -18,6 +18,8 @@ class DiaNaoLetivo {
     private $status;
     private $diaDaSemana;
     private $usuarioCadastrante;
+    private $dataInicial;
+    private $dataFinal;
     
   public function set_descricao($Vdescricao){
     $this->descricao = $Vdescricao;
@@ -79,5 +81,16 @@ class DiaNaoLetivo {
   public function get_usuarioCadastrante() {
       return $this->usuarioCadastrante;
   }
- 
+  public function set_dataInicial($dataInicial){
+      $this->dataInicial = $dataInicial;
+  }
+  public function get_dataInicial(){
+      return $this->dataInicial;
+  }
+  public function set_dataFinal($dataFinal){
+      $this->dataFinal = $dataFinal;
+  }
+  public function get_dataFinal(){
+      return $this->dataFinal;
+  }
 }
