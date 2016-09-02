@@ -50,7 +50,7 @@ class DiaNaoLetivoDao {
                 
                 $mesDia = $rest = substr($diaNaoLetivo->get_data(), 5, 9);
                 //UPDATE NO BANCO SQL SERVER
-                $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET STATUS = 0, FNL = 1, FNL_CT = 1, DESCRICAO = $arrayDados[0], STATUS_CT = 0, DESCRICAO_CT = $arrayDados[0] WHERE DATADIA LIKE '%$mesDia' AND CODFILIAL = $arrayDados[5]";
+                $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET STATUS = 0, FNL = 1, FNL_CT = 1, DESCRICAO = $arrayDados[0], STATUS_CT = 0, DESCRICAO_CT = $arrayDados[0], STATUS_SS = 0, FNL_SS = 1, DESCRICAO_SS = $arrayDados[0],STATUS_CTSS = 0, FNL_CTSS = 1, DESCRICAO_CTSS = $arrayDados[0] WHERE DATADIA LIKE '%$mesDia' AND CODFILIAL = $arrayDados[5]";
                 $sucesso = mssql_query($update);
                 if ($sucesso) {
                     return 2;
@@ -64,7 +64,7 @@ class DiaNaoLetivoDao {
     }
     //METODO QUE INSERI PERIODO NÃO LETIVO, SOMENTE PARA CURSO TECNICOS
     public function inseriPeridoNaoLetivo($dataInicial, $dataFinal, $descricao, $codFilial){
-       $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DESCRICAO_CT = $descricao, STATUS_CT  = 0, DLETIVO_CT = 0, HDLETIVO_CT = 0, FNL_CT = 1 WHERE DATADIA BETWEEN '$dataInicial' AND '$dataFinal' AND CODFILIAL = $codFilial";
+       $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DESCRICAO_CT = $descricao, STATUS_CT  = 0, DLETIVO_CT = 0, HDLETIVO_CT = 0, FNL_CT = 1, STATUS_CTSS = 0, DLETIVO_CTSS = 0, HDLETIVO_CTSS = 0, FNL_CTSS = 1 WHERE DATADIA BETWEEN '$dataInicial' AND '$dataFinal' AND CODFILIAL = $codFilial";
        $result = mssql_query($update);
        if ($result) {
             return 7;
@@ -79,7 +79,7 @@ class DiaNaoLetivoDao {
     }
     // METODO QUE INSERI PERIDO NAO LETIVO PARA TODA ESCOLA
     public function inseriDiaNaoLetivoPorPerido($codFilial,$dataInicial, $dataFinal,$descricao){
-        $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET STATUS = 0, FNL = 1, STATUS_CT = 0, FNL_CT = 1, DESCRICAO = $descricao, DESCRICAO_CT = $descricao WHERE DATADIA BETWEEN '$dataInicial' AND '$dataFinal' AND CODFILIAL = $codFilial";
+        $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET STATUS = 0, FNL = 1, STATUS_CT = 0, FNL_CT = 1, DESCRICAO = $descricao, DESCRICAO_CT = $descricao, STATUS_SS = 0, FNL_SS = 1, DESCRICAO_SS = $descricao, STATUS_CTSS = 0, FNL_CTSS = 1, DESCRICAO_CTSS = $descricao WHERE DATADIA BETWEEN '$dataInicial' AND '$dataFinal' AND CODFILIAL = $codFilial";
         $restult = mssql_query($update);
         if ($restult) {
             return 7;
@@ -94,7 +94,7 @@ class DiaNaoLetivoDao {
             $diaNaoLetivo->get_codFilial(),$diaNaoLetivo->get_codTurno(),$diaNaoLetivo->get_dataInicial(),
             $diaNaoLetivo->get_dataFinal(),$diaNaoLetivo->get_descricao()
         );
-        $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DESCRICAO = $arrayDados[4],DESCRICAO_CT = $arrayDados[4], STATUS = 0,STATUS_CT = 0, FNL = 1, FNL_CT = 1 WHERE DATADIA BETWEEN '$arrayDados[2]' AND '$arrayDados[3]' AND CODTURNO = $arrayDados[1] AND CODFILIAL = $arrayDados[0]";
+        $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DESCRICAO = $arrayDados[4],DESCRICAO_CT = $arrayDados[4], STATUS = 0,STATUS_CT = 0, FNL = 1, FNL_CT = 1, STATUS_SS = 0, FNL_SS = 1, STATUS_CTSS = 0, FNL_CTSS = 1 WHERE DATADIA BETWEEN '$arrayDados[2]' AND '$arrayDados[3]' AND CODTURNO = $arrayDados[1] AND CODFILIAL = $arrayDados[0]";
         $result = mssql_query($update);
         if($result){
             return 12;

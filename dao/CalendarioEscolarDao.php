@@ -71,8 +71,8 @@ class CalendarioEscolarDao {
             for ($index = 0; $index < count($arrayCodigoTurno); $index++) {
 
                 //INSERT NO BANCO DE DADOS SQL
-                $insert = "INSERT dbo.PHE_CALENDARIO_ESCOLA (DESCRICAO,DATADIA,HORINI,HORFIM,CODTURNO,CODFILIAL,DLETIVO,STATUS,DIASEMANA,AULA,FNL,HDLETIVO,STATUS_CT,DLETIVO_CT,HDLETIVO_CT,DESCRICAO_CT,FNL_CT,RECCREATEDBY)"
-                        . "VALUES ($arrayDados[0],'$arrayDados[1]','$arrayHoraIni[$index]','$arrayHoraFini[$index]',$arrayCodigoTurno[$index],$arrayDados[2],0,'$arrayDados[3]','$arrayDados[4]','$arrayAula[$index]',0,0,1,0,0,$arrayDados[0],0,'$arrayDados[6]')";
+                $insert = "INSERT dbo.PHE_CALENDARIO_ESCOLA (DESCRICAO,DATADIA,HORINI,HORFIM,CODTURNO,CODFILIAL,DLETIVO,STATUS,DIASEMANA,AULA,FNL,HDLETIVO,STATUS_CT,DLETIVO_CT,HDLETIVO_CT,DESCRICAO_CT,FNL_CT,RECCREATEDBY,DESCRICAO_SS,DIALETIVO_SS,FNL_SS,HDLETIVO_SS,STATUS_SS,DESCRICAO_CTSS,DIALETIVO_CTSS,FNL_CTSS,HDLETIVO_CTSS,STATUS_CTSS)"
+                        . "VALUES ($arrayDados[0],'$arrayDados[1]','$arrayHoraIni[$index]','$arrayHoraFini[$index]',$arrayCodigoTurno[$index],$arrayDados[2],0,'$arrayDados[3]','$arrayDados[4]','$arrayAula[$index]',0,0,1,0,0,$arrayDados[0],0,'$arrayDados[6]',$arrayDados[0],0,0,0,1,$arrayDados[0],0,0,0,1)";
                 $result = mssql_query($insert);
                 if ($result) {
                     $cont++;
@@ -112,8 +112,9 @@ class CalendarioEscolarDao {
                     }
                     while ($linha = mssql_fetch_array($result)) {
                         $idCalendarioEscola = $linha['ID'];
+                        $diaDaSemana = $linha['DIASEMANA'];
                         for ($i = 0; $i < count($arrayCodigoTurno); $i++) {
-                            if ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario == "vazio") {
+                            if ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario == "vazio" && $diaDaSemana != "SAB") {
                                 $dataCalendario = $linha['DATADIA'];
                                 $contadorDiaLetivo += 1;
                                 $arrayContadorTurno[$i] += + 1;
@@ -121,13 +122,13 @@ class CalendarioEscolarDao {
                                 $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO = $contadorDiaLetivo, HDLETIVO = $arrayContadorTurno[$i] WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
                                 mssql_query($update);
                                 break;
-                            } elseif ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario == $linha['DATADIA']) {
+                            } elseif ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario == $linha['DATADIA'] && $diaDaSemana != "SAB") {
                                 $arrayContadorTurno[$i] += +1;
                                 $contaUpdate+= +1;
                                 $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO = $contadorDiaLetivo, HDLETIVO = $arrayContadorTurno[$i] WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
                                 mssql_query($update);
                                 break;
-                            } elseif ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario != $linha["DATADIA"] && $dataCalendario != "vazio") {
+                            } elseif ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario != $linha["DATADIA"] && $dataCalendario != "vazio" && $diaDaSemana != "SAB") {
                                 $contadorDiaLetivo += 1;
                                 $arrayContadorTurno[$i] += +1;
                                 $contaUpdate+= +1;
@@ -141,7 +142,19 @@ class CalendarioEscolarDao {
                     if ($contaUpdate != 0) {
                         $realizacao = $this->geraDiaLetivoCursoTecnico($codFilial);
                         if ($realizacao == 10) {
-                            return 6;
+                            $realizacao = $this->geraDiaLetivoCursosAosSabados($codFilial);
+                            if($realizacao == 10){
+                                $realizacao = $this->geraDiaLetivoCursosAosSabadosCt($codFilial);
+                                if($realizacao == 10){
+                                    return 6;
+                                }
+                                else{
+                                    return 505;
+                                }
+                            }
+                            else{
+                                return 505;
+                            }
                         } else {
                             return 505;
                         }
@@ -185,24 +198,139 @@ class CalendarioEscolarDao {
                 }
                 while ($linha = mssql_fetch_array($result)) {
                     $idCalendarioEscola = $linha['ID'];
+                    $diaDaSemana = $linha['DIASEMANA'];
                     for ($i = 0; $i < count($arrayCodigoTurno); $i++) {
-                        if ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario == "vazio") {
+                        if ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario == "vazio" && $diaDaSemana != "SAB") {
                             $dataCalendario = $linha['DATADIA'];
                             $contadorDiaLetivo += 1;
                             $arrayContadorTurno[$i] += + 1;
                             $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_CT = $contadorDiaLetivo, HDLETIVO_CT = $arrayContadorTurno[$i] WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
                             mssql_query($update);
                             break;
-                        } elseif ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario == $linha['DATADIA']) {
+                        } elseif ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario == $linha['DATADIA'] && $diaDaSemana != "SAB") {
                             $arrayContadorTurno[$i] += +1;
                             $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_CT = $contadorDiaLetivo, HDLETIVO_CT = $arrayContadorTurno[$i] WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
+                            mssql_query($update);
+                            break;
+                        } elseif ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario != $linha["DATADIA"] && $dataCalendario != "vazio" && $diaDaSemana != "SAB") {
+                            $contadorDiaLetivo += 1;
+                            $arrayContadorTurno[$i] += +1;
+                            $dataCalendario = $linha['DATADIA'];
+                            $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_CT = $contadorDiaLetivo, HDLETIVO_CT = $arrayContadorTurno[$i] WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
+                            mssql_query($update);
+                            break;
+                        }
+                    }
+                }
+                return 10;
+            } elseif ($arrayCodigoTurno[0] == 505) {
+                return 9;
+            }
+        } else {
+            return 505;
+        }
+    }
+    private function geraDiaLetivoCursosAosSabados($codFilial) {
+
+        $contadorDiaLetivo = 0;
+        $idCalendarioEscola = "";
+        $contador = 0;
+        $arrayContadorTurno = array();
+        $arrayCodigoTurno = array();
+        $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL_SS = 0 AND STATUS_SS = 1 AND CODFILIAL = $codFilial";
+        $result = mssql_query($select);
+        $dataCalendario = "vazio";
+        while ($row = mssql_fetch_array($result)) {
+            $contador+= +1;
+        }
+        if ($contador != 0) {
+            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL_SS = 0 AND STATUS_SS = 1 AND CODFILIAL = $codFilial";
+            $result = mssql_query($select);
+            
+            //VERIFICANDO SE A FUNÇÃO QUE CRIAR ARRAY COM OS CODIGOS DOS TURNOS DEU CERTO
+            $arrayCodigoTurno = $this->retornaArrayComTodosOsTurno($codFilial);
+            
+            if ($arrayCodigoTurno[0] != 505) {
+                for ($index = 0; $index < count($arrayCodigoTurno); $index++) {
+                    $arrayContadorTurno[$index] = 0;
+                }
+                while ($linha = mssql_fetch_array($result)) {
+                    $idCalendarioEscola = $linha['ID'];
+                    for ($i = 0; $i < count($arrayCodigoTurno); $i++) {
+                        if ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario == "vazio") {
+                            $dataCalendario = $linha['DATADIA'];
+                            $contadorDiaLetivo += 1;
+                            $arrayContadorTurno[$i] += + 1;
+                            $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_SS = $contadorDiaLetivo, HDLETIVO_SS = $arrayContadorTurno[$i] WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
+                            mssql_query($update);
+                            break;
+                        } elseif ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario == $linha['DATADIA']) {
+                            $arrayContadorTurno[$i] += +1;
+                            $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_SS = $contadorDiaLetivo, HDLETIVO_SS = $arrayContadorTurno[$i] WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
                             mssql_query($update);
                             break;
                         } elseif ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario != $linha["DATADIA"] && $dataCalendario != "vazio") {
                             $contadorDiaLetivo += 1;
                             $arrayContadorTurno[$i] += +1;
                             $dataCalendario = $linha['DATADIA'];
-                            $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_CT = $contadorDiaLetivo, HDLETIVO_CT = $arrayContadorTurno[$i] WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
+                            $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_SS = $contadorDiaLetivo, HDLETIVO_SS = $arrayContadorTurno[$i] WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
+                            mssql_query($update);
+                            break;
+                        }
+                    }
+                }
+                return 10;
+            } elseif ($arrayCodigoTurno[0] == 505) {
+                return 9;
+            }
+        } else {
+            return 505;
+        }
+    }
+    private function geraDiaLetivoCursosAosSabadosCt($codFilial) {
+
+        $contadorDiaLetivo = 0;
+        $idCalendarioEscola = "";
+        $contador = 0;
+        $arrayContadorTurno = array();
+        $arrayCodigoTurno = array();
+        $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL_CTSS = 0 AND STATUS_CTSS = 1 AND CODFILIAL = $codFilial";
+        $result = mssql_query($select);
+        $dataCalendario = "vazio";
+        while ($row = mssql_fetch_array($result)) {
+            $contador+= +1;
+        }
+        if ($contador != 0) {
+            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL_CTSS = 0 AND STATUS_CTSS = 1 AND CODFILIAL = $codFilial";
+            $result = mssql_query($select);
+            
+            //VERIFICANDO SE A FUNÇÃO QUE CRIAR ARRAY COM OS CODIGOS DOS TURNOS DEU CERTO
+            $arrayCodigoTurno = $this->retornaArrayComTodosOsTurno($codFilial);
+            
+            if ($arrayCodigoTurno[0] != 505) {
+                for ($index = 0; $index < count($arrayCodigoTurno); $index++) {
+                    $arrayContadorTurno[$index] = 0;
+                }
+                while ($linha = mssql_fetch_array($result)) {
+                    $idCalendarioEscola = $linha['ID'];
+                    for ($i = 0; $i < count($arrayCodigoTurno); $i++) {
+                        if ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario == "vazio") {
+                            $dataCalendario = $linha['DATADIA'];
+                            $contadorDiaLetivo += 1;
+                            $arrayContadorTurno[$i] += + 1;
+                            $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_CTSS = $contadorDiaLetivo, HDLETIVO_CTSS = $arrayContadorTurno[$i] WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
+                            mssql_query($update);
+                            break;
+                        } elseif ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario == $linha['DATADIA']) {
+                            $arrayContadorTurno[$i] += +1;
+                            $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_CTSS = $contadorDiaLetivo, HDLETIVO_CTSS = $arrayContadorTurno[$i] WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
+                            mssql_query($update);
+                            break;
+                        } elseif ($arrayCodigoTurno[$i] == $linha['CODTURNO'] && $dataCalendario != $linha["DATADIA"] && $dataCalendario != "vazio") {
+                            $contadorDiaLetivo += 1;
+                            $arrayContadorTurno[$i] += +1;
+                            $dataCalendario = $linha['DATADIA'];
+                            $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO_CTSS = $contadorDiaLetivo, HDLETIVO_CTSS = $arrayContadorTurno[$i] WHERE ID = $idCalendarioEscola AND CODFILIAL = $codFilial";
                             mssql_query($update);
                             break;
                         }
@@ -240,7 +368,7 @@ class CalendarioEscolarDao {
     }
     //METODO QUE ZERA TODOS OS DIAS LETIVOS JA REGISTRADOS
     private function zeraTodosDiasLetivos($codFilial) {
-        $instrucao = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO = 0, DLETIVO_CT = 0, HDLETIVO = 0, HDLETIVO_CT = 0 WHERE CODFILIAL = $codFilial";
+        $instrucao = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO = 0, DLETIVO_CT = 0, HDLETIVO = 0, HDLETIVO_CT = 0, DLETIVO_SS = 0, HDLETIVO_SS = 0, DLETIVO_CTSS = 0, HDLETIVO_CTSS = 0 WHERE CODFILIAL = $codFilial";
         $resultado = mssql_query($instrucao);
         if ($resultado) {
             return true;
