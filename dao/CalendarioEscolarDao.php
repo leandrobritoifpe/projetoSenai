@@ -71,7 +71,7 @@ class CalendarioEscolarDao {
             for ($index = 0; $index < count($arrayCodigoTurno); $index++) {
 
                 //INSERT NO BANCO DE DADOS SQL
-                $insert = "INSERT dbo.PHE_CALENDARIO_ESCOLA (DESCRICAO,DATADIA,HORINI,HORFIM,CODTURNO,CODFILIAL,DLETIVO,STATUS,DIASEMANA,AULA,FNL,HDLETIVO,STATUS_CT,DLETIVO_CT,HDLETIVO_CT,DESCRICAO_CT,FNL_CT,RECCREATEDBY,DESCRICAO_SS,DIALETIVO_SS,FNL_SS,HDLETIVO_SS,STATUS_SS,DESCRICAO_CTSS,DIALETIVO_CTSS,FNL_CTSS,HDLETIVO_CTSS,STATUS_CTSS)"
+                $insert = "INSERT dbo.PHE_CALENDARIO_ESCOLA (DESCRICAO,DATADIA,HORINI,HORFIM,CODTURNO,CODFILIAL,DLETIVO,STATUS,DIASEMANA,AULA,FNL,HDLETIVO,STATUS_CT,DLETIVO_CT,HDLETIVO_CT,DESCRICAO_CT,FNL_CT,RECCREATEDBY,DESCRICAO_SS,DLETIVO_SS,FNL_SS,HDLETIVO_SS,STATUS_SS,DESCRICAO_CTSS,DLETIVO_CTSS,FNL_CTSS,HDLETIVO_CTSS,STATUS_CTSS)"
                         . "VALUES ($arrayDados[0],'$arrayDados[1]','$arrayHoraIni[$index]','$arrayHoraFini[$index]',$arrayCodigoTurno[$index],$arrayDados[2],0,'$arrayDados[3]','$arrayDados[4]','$arrayAula[$index]',0,0,1,0,0,$arrayDados[0],0,'$arrayDados[6]',$arrayDados[0],0,0,0,1,$arrayDados[0],0,0,0,1)";
                 $result = mssql_query($insert);
                 if ($result) {
