@@ -108,8 +108,9 @@ if (isset($_POST['DATAFIN'])) {
                 break;
         }
     }
+    $atualizouCalendarioComFeriados = $dao->atualizaCalendarioComFeriados($calendarioEscolar);
     $dao->fechaBanco();
-    if ($cont != 0) {
+    if ($cont != 0 && $atualizouCalendarioComFeriados == 0) {
         $mensagem = exibeMesagensParaUsuario(0);
         echo "<script>window.location='index.php';alert('$mensagem');</script>";
     }

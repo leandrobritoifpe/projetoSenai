@@ -4,7 +4,7 @@ function dias_feriados($ano = null)
 {
   if ($ano === null)
   {
-   echo $ano = intval(date('Y'));
+  // echo $ano = intval(date('Y'));
   }
  
   $pascoa     = easter_date($ano); // Limite de 1970 ou após 2037 da easter_date PHP consulta http://www.php.net/manual/pt_BR/function.easter-date.php
@@ -39,15 +39,15 @@ $ano_='2017';// $ano_='2010';
 foreach(dias_feriados($ano_) as $a)
 {
 if (date("Y-m-d",$a) == '2017-01-01') {
-    echo "certo";
+   // echo "certo";
 }
 else{
-    echo "aqui:";
-    echo date("m-d",$a);
+    //echo "aqui:";
+   /// echo date("m-d",$a);
 }
     
 }
 
-$ano = '2016-01-01';
-$rest = substr($ano, 0, -6);  // retorna "abcde"
+$ano = '2016-07-05';
+$rest = substr($ano,0,-6);  // retorna "abcde"
 echo $rest;

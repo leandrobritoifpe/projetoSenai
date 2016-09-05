@@ -171,6 +171,28 @@ class CalendarioEscolarDao {
             return 505;
         }
     }
+    public function atualizaCalendarioComFeriados(CalendarioEscolar $calendarioEscolar) {
+        $codFilial = $calendarioEscolar->get_codFilial();
+        $select = "SELECT * FROM PHE_DIA_NAO_LETIVOS WHERE CODFILIAL = $codFilial";
+        $resultado = mssql_query($select);
+        if ($resultado) {
+            while ($linha = mssql_fetch_array($resultado)) {
+                $descricao = $linha['DESCRICAO'];
+                $data = substr($linha['DATADIA'], 5, 9);
+                $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DESCRICAO = $descricao, DESCRICAO_CT = $descricao, DESCRICAO_SS = $descricao,DESCRICAO_CTSS = $descricao, FNL = 1, FNL_CT = 1, "
+                        . "FNL_SS = 1, FNL_CTSS = 1 WHERE DATA LIKE '%$data' AND CODFILIAL = $codFilial";
+                $resultado = mssql_query($update);
+                if ($resultado) {
+                    return 0;
+                } else {
+                    return 505;
+                }
+            }
+        } else {
+            return 505;
+        }
+    }
+
     //FUNÇÃO QUE CRIA DIAS LETIVOS PARA CURSO TECNICOS
     private function geraDiaLetivoCursoTecnico($codFilial) {
 
