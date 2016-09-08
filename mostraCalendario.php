@@ -1,4 +1,12 @@
 <?php
+/*
+ * CLASSE CalendarioEscolarDao
+ * OBJETIVO: REALIZAR TODA AS COMUNICAÇOES COM O BANCO DE DADOS SQL SERVER
+ * CRIADA: 05/09/2016
+ * ULTIMA ATUALIZACAO : 08/09/2016
+ * 
+ * DS-> LEANDRO BRITO
+ */
     include_once './entidades/Calendario.php';
     include_once './util/conectaBanco.php';
     $con = conectandoComBanco();
@@ -45,12 +53,14 @@
            <div class="container">
                 <div class="row">
                     <div class="col-md-3 col-sm-4 col-xs-6">
-                        <div>JANEIRO</div>
-                        <?php
-                           $janiero = new Calendario();
-                           $janiero->geraCalendario(01, $ano,$codFilial,1);
-                           //echo $ano;
-                        ?>
+                        <div>
+                            <div>JANEIRO</div>
+                            <?php
+                               $janiero = new Calendario();
+                               $janiero->geraCalendario(01, $ano,$codFilial,1);
+                               //echo $ano;
+                            ?>
+                        </div>
                     </div>
                     
                      <div class="col-md-3 col-sm-4 col-xs-6">
@@ -124,10 +134,12 @@
                     </div>
                     <div class="col-md-3 col-sm-4 col-xs-6">
                         <div>NOVEMBRO</div>
-			<?php
-                          $novembro = new Calendario();
-                          $novembro->geraCalendario(11, $ano, $codFilial,1)
-                        ?>
+                            <div>
+                                <?php
+                                  $novembro = new Calendario();
+                                  $novembro->geraCalendario(11, $ano, $codFilial,1)
+                                ?>
+                            </div>
                     </div> 
                     <div class="col-md-3 col-sm-4 col-xs-6">
 			<div>DEZEMBRO</div>
@@ -135,6 +147,36 @@
                            $dezembro = new Calendario();
                            $dezembro->geraCalendario(12, $ano, $codFilial,1)
                         ?>
+                    </div> 
+                </div>
+                <div class="row">
+                    <div class="col-md-3 col-sm-4 col-xs-6">
+			<div>DATAS DE FERIADOS ESCOLARES</div>
+                        <div>
+                            <?php
+                                $selectFeriados = "SELECT * FROM PHE_DIAS_NAO_LETIVOS WHERE CODFILIAL = $codFilial";
+                                $resultado = mssql_query($selectFeriados);
+                                $contador = 0;
+                                if ($resultado) {
+                                    while ($linha = mssql_fetch_array($resultado)) {
+                            ?>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>DATA</th>
+                                        <th>DESCRICAO</th>
+                                    </tr>
+                                </thead>
+                                <tr>
+                                    <td><?php echo $linha['DATA'];?></td>
+                                    <td><?php echo $linha['DESCRICAO'];?></td>
+                                </tr>
+                            </table>
+                            <?php
+                                    }
+                                }
+                            ?>
+                        </div>
                     </div> 
                 </div>
            </div>

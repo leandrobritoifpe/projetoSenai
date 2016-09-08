@@ -1,4 +1,14 @@
+
+
 <?php
+/*
+ * CLASSE CalendarioEscolarDao
+ * OBJETIVO: REALIZAR TODA AS COMUNICAÇOES COM O BANCO DE DADOS SQL SERVER
+ * CRIADA: 05/09/2016
+ * ULTIMA ATUALIZACAO : 05/09/2016
+ * 
+ * DS-> LEANDRO BRITO
+ */
  include_once './util/conectaBanco.php';
 class Calendario {
     public $codFilial;

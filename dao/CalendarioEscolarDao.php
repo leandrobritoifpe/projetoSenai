@@ -4,7 +4,7 @@
  * CLASSE CalendarioEscolarDao
  * OBJETIVO: REALIZAR TODA AS COMUNICAÇOES COM O BANCO DE DADOS SQL SERVER
  * CRIADA: 25/08/2016
- * ULTIMA ATUALIZACAO : 01/08/2016
+ * ULTIMA ATUALIZACAO : 08/09/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -171,28 +171,43 @@ class CalendarioEscolarDao {
             return 505;
         }
     }
+    // FUNCAO QUE ATUALIZAR O CALENDARIO COM OS FERIADOS JÁ CADASTRADOS
     public function atualizaCalendarioComFeriados(CalendarioEscolar $calendarioEscolar) {
-        $codFilial = $calendarioEscolar->get_codFilial();
-        $select = "SELECT * FROM PHE_DIA_NAO_LETIVOS WHERE CODFILIAL = $codFilial";
-        $resultado = mssql_query($select);
-        if ($resultado) {
-            while ($linha = mssql_fetch_array($resultado)) {
-                $descricao = $linha['DESCRICAO'];
-                $data = substr($linha['DATADIA'], 5, 9);
-                $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DESCRICAO = $descricao, DESCRICAO_CT = $descricao, DESCRICAO_SS = $descricao,DESCRICAO_CTSS = $descricao, FNL = 1, FNL_CT = 1, "
-                        . "FNL_SS = 1, FNL_CTSS = 1 WHERE DATA LIKE '%$data' AND CODFILIAL = $codFilial";
-                $resultado = mssql_query($update);
-                if ($resultado) {
-                    return 0;
-                } else {
-                    return 505;
+            $codFilial = $calendarioEscolar->get_codFilial();
+            $select = "SELECT * FROM PHE_DIAS_NAO_LETIVOS WHERE STATUS = 1";
+            $resultado = mssql_query($select);
+            if ($resultado) {
+                $select = "SELECT * FROM PHE_DIAS_NAO_LETIVOS WHERE STATUS = 1";
+                $resultado = mssql_query($select);
+                while ($linha = mssql_fetch_array($resultado)) {
+                    $descricao = $linha['DESCRICAO'];
+                    $data = substr($linha['DATA'], 5, 9);
+                    $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DESCRICAO = $descricao, DESCRICAO_CT = $descricao, DESCRICAO_SS = $descricao,DESCRICAO_CTSS = $descricao, FNL = 1, FNL_CT = 1, "
+                            . "FNL_SS = 1, FNL_CTSS = 1, STATUS = 0, STATUS_CT = 0, STATUS_SS = 0, STATUS_CTSS = 0 WHERE DATADIA LIKE '%$data' AND CODFILIAL = $codFilial";
+                    $resultado = mssql_query($update);
                 }
+               return 0;
+            } else {
+               return 505;
             }
-        } else {
-            return 505;
+    }
+    //FUNCAO QUE VERIFICA SE O FERIDADO JÁ FOI CADASTRADO
+    public function existeFeriado(){
+        $select = "SELECT * FROM PHE_DIAS_NAO_LETIVOS WHERE STATUS = 1";
+        $resultado = mssql_query($select);
+        $contador = 0;
+        if ($resultado) {
+            while ($row = mssql_fetch_array($resultado)) {
+                $contador += +1;
+            }
+            if ($contador == 1 || $contador > 1) {
+               return true; 
+            }
+            elseif($contador == 0) {
+                return false;
+            }
         }
     }
-
     //FUNÇÃO QUE CRIA DIAS LETIVOS PARA CURSO TECNICOS
     private function geraDiaLetivoCursoTecnico($codFilial) {
 
@@ -252,6 +267,7 @@ class CalendarioEscolarDao {
             return 505;
         }
     }
+    //FUNCAO QUE GERA OS DIAS LETIVOS DO CUSROS TECNICOS AOS SABADOS
     private function geraDiaLetivoCursosAosSabados($codFilial) {
 
         $contadorDiaLetivo = 0;
@@ -309,6 +325,7 @@ class CalendarioEscolarDao {
             return 505;
         }
     }
+    //FUNCAO QUE GERA OS DIAS LETIVOS DOS CURSO TECNICOS AOS SABADOS
     private function geraDiaLetivoCursosAosSabadosCt($codFilial) {
 
         $contadorDiaLetivo = 0;
