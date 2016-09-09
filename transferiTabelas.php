@@ -1,19 +1,12 @@
 <?php
-/*
- * CLASSE CalendarioEscolarDao
- * OBJETIVO: REALIZAR TODA AS COMUNICAÇOES COM O BANCO DE DADOS SQL SERVER
- * CRIADA: 08/09/2016
- * ULTIMA ATUALIZACAO : 08/09/2016
- * 
- * DS-> LEANDRO BRITO
- */
-include_once './util/conectaBanco.php';
+
+include_once 'conectaBanco.php';
 $conexao1 = conectandoComBanco();
 $listaDeDados = array();
 $i = 0;
 
 $select = "SELECT * FROM PHE_DESCRICAO_CALENDARIO_ESCOLA";
-
+$resultado = mssql_query($select);
 while ($registro = mssql_fetch_array($resultado)) {
     $arrayDados = array();
     $arrayDados[] = $registro['ID'];
@@ -30,7 +23,7 @@ while ($registro = mssql_fetch_array($resultado)) {
 }
 mssql_close($conexao1);
 
-include_once './util/conexaoBancoDois.php';
+include_once 'conexaoBancoDois.php';
 $conexao2 = conectandoComBanco2();
 
 $selec2 = "SELECT * FROM PHE_DESCRICAO_CALENDARIO_ESCOLA2";
@@ -57,8 +50,8 @@ if ($contador != 0) {
             $update = "UPDATE dbo.PHE_DESCRICAO_CALENDARIO_ESCOLA2 SET DESCRICAO = '$arrayTeste[1]', STATUS = '$arrayTeste[2]', RECCREATEDBY = '$arrayTeste[3]', RECCREATEDON = '$arrayTeste[4]', RECMODIFIEDBY = '$arrayTeste[5]',"
                     . " RECMODIFIEDON = '$arrayTeste[6]', TIPO = $arrayTeste[7] WHERE ID = $arrayTeste[0]";
         } elseif ($reccreatedon == null || $reccreatedon == "") {
-            $insert = "INSERT dbo.PHE_DESCRICAO_CALENDARIO_ESCOLA2 (DESCRICAO,STATUS,RECCREATEDBY,RECCREATEDON,RECMODIFIEDBY,RECMODIFIEDON,TIPO)"
-                    . " VALUES ('$arrayTeste[1]','$arrayTeste[2]','$arrayTeste[3]','$arrayTeste[4]','$arrayDados[5]','$arrayTeste[6]','$arrayTeste[7]')";
+            $insert = "INSERT dbo.PHE_DESCRICAO_CALENDARIO_ESCOLA2 (DESCRICAO,STATUS,RECCREATEDBY,RECCREATEDON,RECMODIFIEDBY,RECMODIFIEDON,TIPO,ID)"
+                    . " VALUES ('$arrayTeste[1]','$arrayTeste[2]','$arrayTeste[3]','$arrayTeste[4]','$arrayDados[5]','$arrayTeste[6]','$arrayTeste[7]',$arrayTeste[0])";
             mssql_query($insert);
         }
     }
@@ -68,8 +61,8 @@ if ($contador != 0) {
         //$arrayTeste = array();
         $arrayTeste = $listaDeDados[$index];
 
-        $insert = "INSERT dbo.PHE_DESCRICAO_CALENDARIO_ESCOLA2 (DESCRICAO,STATUS,RECCREATEDBY,RECCREATEDON,RECMODIFIEDBY,RECMODIFIEDON,TIPO)"
-                . " VALUES ('$arrayTeste[1]','$arrayTeste[2]','$arrayTeste[3]','$arrayTeste[4]','$arrayDados[5]','$arrayTeste[6]','$arrayTeste[7]')";
+        $insert = "INSERT dbo.PHE_DESCRICAO_CALENDARIO_ESCOLA2 (DESCRICAO,STATUS,RECCREATEDBY,RECCREATEDON,RECMODIFIEDBY,RECMODIFIEDON,TIPO,ID)"
+                . " VALUES ('$arrayTeste[1]','$arrayTeste[2]','$arrayTeste[3]','$arrayTeste[4]','$arrayDados[5]','$arrayTeste[6]','$arrayTeste[7]',$arrayTeste[0])";
         $resultado = mssql_query($insert);
         mssql_close($conexao2);
     }
