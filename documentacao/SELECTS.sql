@@ -1,7 +1,7 @@
 /
 /**
  * Author:  leandro.brito
- * Created: Sep 14, 2016
+ * Created: Sep 14, 2016 15/09/2016
  */
 
 SELECT * FROM PHE_CALENDARIO_ESCOLA;

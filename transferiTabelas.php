@@ -1,5 +1,5 @@
 <?php
-
+//15/09/2016
 include_once 'conectaBanco.php';
 $conexao1 = conectandoComBanco();
 $listaDeDados = array();

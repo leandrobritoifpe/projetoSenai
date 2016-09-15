@@ -1,5 +1,5 @@
 <?php
-// By RL System - www.rlsystem.com.brs
+// By RL System - www.rlsystem.com.brs15/09/2016
 class ContasPagarDAO
 {
 	// M�todo que realiza um insert, ele pede como par�metro um objeto do tipo ContasPagar

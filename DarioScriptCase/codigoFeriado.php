@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/* // 15/09/2016
  * VARIAVEIS PARA SUBSTITUIR
  * 
  * $_POST['DESCRICAO'],

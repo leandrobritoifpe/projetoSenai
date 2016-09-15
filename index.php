@@ -9,7 +9,7 @@
 
 
     <body>
-        <!--  COM.1 = ESTE C�DIGO � USADO PARA DEIXAR MEU SITE RESPONSIVEL-->
+        <!--  COM.1 = ESTddE C�DIGO � USADO PARA DEIXAR MEU SITE RESPONSIVEL-->
 
         <div class=�container�>
             <form method="post" action="geradorDeCalendario.php">
