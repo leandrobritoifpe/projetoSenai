@@ -7,7 +7,7 @@
  * 
  * DS-> LEANDRO BRITO
  */
-    include_once './entidades/Calendario.php';
+    include_once './entidades/CalendarioSegSab.php';
     include_once './util/conectaBanco.php';
     include './gerenciadorDeFuncoes.php';
     $con = conectandoComBanco();
@@ -35,7 +35,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-            <title>CALENDARIO SEGUNDA A SEXTA</title>
+            <title>CALENDARIO SEGUNDA A SABADO</title>
         <meta charset="UTF-8" />
             <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/> 
             <meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
@@ -49,15 +49,6 @@
             <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
             <script type="text/javascript" src="js_file/jquery-2.1.4.js"></script>
             <script src="bootstrap/js/bootstrap.min.js"></script>
-            <!-- DataTables CSS -->
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.8/css/jquery.dataTables.css">
-  
-<!-- jQuery -->
-<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
-  
-<!-- DataTables -->
-<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.8/js/jquery.dataTables.js"></script>
-<script type="text/javascript" src="js_file/teste.js"></script>
     </head>
     <body>
         <div class="main clearfix">
@@ -69,7 +60,7 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>CALENDARIO SEGUNDA A SEXTA</th>
+                                        <th>CALENDARIO SEGUNDA A SABADO</th>
                                     </tr>
                                     <tr>
                                         <th style="background-color:red; color: red;">VERMELHO</th>
@@ -96,7 +87,7 @@
                                 ?>
                             </div>
                             <?php
-                               $janiero = new Calendario();
+                               $janiero = new CalendarioSegSab();
                                $janiero->geraCalendario($index, $ano,$codFilial,$codDocente);
                             ?>
                         </div>
@@ -119,7 +110,7 @@
                                 ?>
                             </div>
                             <?php
-                               $janiero = new Calendario();
+                               $janiero = new CalendarioSegSab();
                                $janiero->geraCalendario($index, $ano,$codFilial,$codDocente);
                             ?>
                         </div>
@@ -142,7 +133,7 @@
                                 ?>
                             </div>
                             <?php
-                               $janiero = new Calendario();
+                               $janiero = new CalendarioSegSab();
                                $janiero->geraCalendario($index, $ano,$codFilial,$codDocente);
                             ?>
                         </div>
@@ -196,15 +187,15 @@
                                 $selectFeriados = "select DISTINCT d.DATADIA,e.DESCRICAO
                                                     from PHE_CALENDARIO_ESCOLA d
                                                     left join PHE_DESCRICAO_CALENDARIO_ESCOLA e 
-                                                    on d.DESCRICAO = e.ID
-                                                    where d.DESCRICAO = e.ID
-                                                    AND d.DESCRICAO <> 1
+                                                    on d.DESCRICAO_SS = e.ID
+                                                    where d.DESCRICAO_SS = e.ID
+                                                    AND d.DESCRICAO_SS <> 1
                                                     AND CODTURNO = $codFilial
                                                     ORDER BY DATADIA";
                                 $retorno = mssql_query($selectFeriados);
                                 $conta = 0;
                            ?>
-                            <table class="table" id="tabela">
+                             <table class="table">
                                 <thead>
                                     <tr>
                                         <th>DATA</th>

@@ -7,7 +7,7 @@
  * 
  * DS-> LEANDRO BRITO
  */
-    include_once './entidades/Calendario.php';
+    include_once './entidades/CalendarioCtSegSab.php';
     include_once './util/conectaBanco.php';
     include './gerenciadorDeFuncoes.php';
     $con = conectandoComBanco();
@@ -35,7 +35,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-            <title>CALENDARIO SEGUNDA A SEXTA</title>
+            <title>CALENDARIO SEGUNDA A SÁBADO CURSOS TÉNICOS</title>
         <meta charset="UTF-8" />
             <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/> 
             <meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
@@ -69,7 +69,7 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>CALENDARIO SEGUNDA A SEXTA</th>
+                                        <th>CALENDARIO SEGUNDA A SÁBADO CT</th>
                                     </tr>
                                     <tr>
                                         <th style="background-color:red; color: red;">VERMELHO</th>
@@ -96,7 +96,7 @@
                                 ?>
                             </div>
                             <?php
-                               $janiero = new Calendario();
+                               $janiero = new CalendarioCtSegSab();
                                $janiero->geraCalendario($index, $ano,$codFilial,$codDocente);
                             ?>
                         </div>
@@ -119,7 +119,7 @@
                                 ?>
                             </div>
                             <?php
-                               $janiero = new Calendario();
+                               $janiero = new CalendarioCtSegSab();
                                $janiero->geraCalendario($index, $ano,$codFilial,$codDocente);
                             ?>
                         </div>
@@ -142,7 +142,7 @@
                                 ?>
                             </div>
                             <?php
-                               $janiero = new Calendario();
+                               $janiero = new CalendarioCtSegSab();
                                $janiero->geraCalendario($index, $ano,$codFilial,$codDocente);
                             ?>
                         </div>
@@ -151,6 +151,7 @@
                         }
                     ?>
                 </div>
+               <br></br>
                 <div class="row">
                     <div class="col-md-3 col-sm-4 col-xs-6">
 			<div>DATAS DE FERIADOS ESCOLARES</div>
@@ -164,7 +165,7 @@
                                 $resultado = mssql_query($selectFeriados);
                                 $contador = 0;
                            ?>
-                             <table class="table">
+                            <table class="table" id="tabela3">
                                 <thead>
                                     <tr>
                                         <th>DATA</th>
@@ -190,21 +191,22 @@
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-4 col-xs-6">
-                        <div>DATAS DE FERIADOS ESCOLARES</div>
+                        <div>OUTROS DIAS SEM AULAS</div>
                         <div>
                             <?php
                                 $selectFeriados = "select DISTINCT d.DATADIA,e.DESCRICAO
                                                     from PHE_CALENDARIO_ESCOLA d
                                                     left join PHE_DESCRICAO_CALENDARIO_ESCOLA e 
-                                                    on d.DESCRICAO = e.ID
-                                                    where d.DESCRICAO = e.ID
-                                                    AND d.DESCRICAO <> 1
+                                                    on d.DESCRICAO_CTSS = e.ID
+                                                    where d.DESCRICAO_CT = e.ID
+                                                    AND d.DESCRICAO_CTSS <> 1
+                                                    AND d.DESCRICAO_CTSS <> 6
                                                     AND CODTURNO = $codFilial
                                                     ORDER BY DATADIA";
                                 $retorno = mssql_query($selectFeriados);
                                 $conta = 0;
                            ?>
-                            <table class="table" id="tabela">
+                            <table class="table" id="tabela2">
                                 <thead>
                                     <tr>
                                         <th>DATA</th>
@@ -229,6 +231,47 @@
                                  </table>
                         </div>
                     </div>
+                    <div class="col-md-3 col-sm-4 col-xs-6">
+                        <div>DIAS DE RECESSO</div>
+                        <div>
+                            <?php
+                                $selectFeriados = "select DISTINCT d.DATADIA,e.DESCRICAO
+                                                    from PHE_CALENDARIO_ESCOLA d
+                                                    left join PHE_DESCRICAO_CALENDARIO_ESCOLA e 
+                                                    on d.DESCRICAO_CT = e.ID
+                                                    where d.DESCRICAO_CT = e.ID
+                                                    AND d.DESCRICAO_CT = 6
+                                                    AND CODTURNO = $codFilial
+                                                    ORDER BY DATADIA";
+                                $retorno = mssql_query($selectFeriados);
+                                $conta = 0;
+                           ?>
+                            <table class="table" id="tabela">
+                                <thead>
+                                    <tr>
+                                        <th>DATA</th>
+                                        <th>DESCRICAO</th>
+                                    </tr>
+                                </thead>
+                            <?php
+                                
+                                    while ($linha = mssql_fetch_array($retorno)) {
+                                        $dataFormatoBR = date('d/m/Y', strtotime($linha['DATADIA']));
+                                        $diaMes = substr($dataFormatoBR,0,5);
+                                        
+                            ?>
+                                <tr>
+                                    <td><?php echo $diaMes;?></td>
+                                    <td><?php echo $linha['DESCRICAO'];?></td>
+                                </tr>
+                            
+                            <?php
+                                    }
+                                
+                            ?>
+                                 </table>
+                        </div>
+                    </div>
                 </div>
            </div>
         </div>
@@ -237,5 +280,7 @@
         ?>
     </body>
 </html>
+
+
 
 

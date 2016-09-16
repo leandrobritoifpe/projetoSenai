@@ -19,7 +19,7 @@ class Calendario {
     public $dtmanip;
     public $dsprimdia;
     public $linhafechada;
-    public $codDocente;
+    public $turno;
     
     public function geraCalendario($pmes, $pano, $codFilial,$turno) {
         $this->turno = $turno;
@@ -41,7 +41,7 @@ class Calendario {
         include_once './util/includeBanco.php';
         
         if ($tamandoDaString != 2 && $tamandoDaStringMes != 2) {
-             $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL = 1 AND DATADIA LIKE '$ano-0$mes-0$dia' AND CODFILIAL = $codFilial AND CODTURNO = $turno";
+             $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE (FNL = 1 OR HDLETIVO = 0) AND DATADIA LIKE '$ano-0$mes-0$dia' AND CODFILIAL = $codFilial AND CODTURNO = $turno";
              $resultado = mssql_query($select);
              while ($linha = mssql_fetch_array($resultado)) {
                  $cont ++;
@@ -54,7 +54,7 @@ class Calendario {
              }
         }
         elseif($tamandoDaString == 2 && $tamandoDaStringMes != 2){
-             $select = "SELECT DATADIA FROM PHE_CALENDARIO_ESCOLA WHERE FNL = 1 AND DATADIA LIKE '$ano-0$mes-$dia' AND CODFILIAL = $codFilial AND CODTURNO = $turno";
+             $select = "SELECT DATADIA FROM PHE_CALENDARIO_ESCOLA WHERE (FNL = 1 OR HDLETIVO = 0) AND DATADIA LIKE '$ano-0$mes-$dia' AND CODFILIAL = $codFilial AND CODTURNO = $turno";
              $resultado = mssql_query($select);
              while ($linha = mssql_fetch_array($resultado)) {
                  $cont ++;
@@ -67,7 +67,7 @@ class Calendario {
              }
         }
         elseif($tamandoDaString == 2 && $tamandoDaStringMes == 2){
-             $select = "SELECT DATADIA FROM PHE_CALENDARIO_ESCOLA WHERE FNL = 1 AND DATADIA LIKE '$ano-$mes-$dia' AND CODFILIAL = $codFilial AND CODTURNO = $turno";
+             $select = "SELECT DATADIA FROM PHE_CALENDARIO_ESCOLA WHERE (FNL = 1 OR HDLETIVO = 0) AND DATADIA LIKE '$ano-$mes-$dia' AND CODFILIAL = $codFilial AND CODTURNO = $turno";
              $resultado = mssql_query($select);
              while ($linha = mssql_fetch_array($resultado)) {
                  $cont ++;
