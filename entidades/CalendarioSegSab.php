@@ -1,15 +1,12 @@
 <?php
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- * Description of CalendarioSegSab
- *
- * @author leandro.brito
+ * CLASSE DiaNaoLetivoDao
+ * OJETIVO : RESPOSAVEL POR TODA A COMUNICACAO COM O BANCO DE DADOS
+ * CRIADA : 16/09/2016
+ * ULTIMA ATUALIZACAO : 16/09/2016
+ * 
+ * DS -> LEANDRO BRITO ;)
  */
 class CalendarioSegSab {
     public $codFilial;

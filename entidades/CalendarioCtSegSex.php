@@ -1,6 +1,13 @@
 <?php
 
-
+/*
+ * CLASSE DiaNaoLetivoDao
+ * OJETIVO : RESPOSAVEL POR TODA A COMUNICACAO COM O BANCO DE DADOS
+ * CRIADA : 16/09/2016
+ * ULTIMA ATUALIZACAO : 16/09/2016
+ * 
+ * DS -> LEANDRO BRITO ;)
+ */
 class CalendarioCtSegSex {
     public $codFilial;
     public $dia;
