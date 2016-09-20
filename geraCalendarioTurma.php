@@ -1,5 +1,15 @@
 <?php
 
+
+/*
+ * CLASSE CalendarioEscolarDao
+ * OBJETIVO: REALIZAR TODA AS COMUNICAÇOES COM O BANCO DE DADOS SQL SERVER
+ * CRIADA: 15/09/2016
+ * ULTIMA ATUALIZACAO : 20/09/2016
+ * 
+ * DS-> LEANDRO BRITO
+ */
+
 include './gerenciadorDeFuncoes.php';
 include_once './entidades/CalendarioTurma.php';
 include_once './dao/CalendarioTurmaDao.php';

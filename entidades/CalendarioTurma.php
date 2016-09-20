@@ -1,15 +1,12 @@
 <?php
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- * Description of CalendarioTurma
- *
- * @author leandro.brito
+ * CLASSE CalendarioEscolarDao
+ * OBJETIVO: PORTADOR DE ATRIBUTOS
+ * CRIADA: 20/09/2016
+ * ULTIMA ATUALIZACAO : 20/09/2016
+ * 
+ * DS-> LEANDRO BRITO
  */
 class CalendarioTurma {
     private $codigoTurma;
@@ -27,7 +24,15 @@ class CalendarioTurma {
     private $aulaHorarios;
     private $userCadastrante;
     private $codCurso;
+    private $codDisciplina;
     
+    public function set_codDisciplina($codDisciplina){
+        $this->codDisciplina = $codDisciplina;
+    }
+
+    public function get_codDisciplina(){
+        return $this->codDisciplina;
+    }
     public function set_codCurso($codCurso){
         $this->codCurso = $codCurso;
     }
