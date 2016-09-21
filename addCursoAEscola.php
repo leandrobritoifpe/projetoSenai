@@ -13,9 +13,9 @@ include_once './dao/CalendarioTurmaDao.php';
 
 
 $codFilial = 1;
-$codCurso = "TEC.034";
-$codDisciplina = "TEC.076.0001";
-$quantidade = 3;
+$codCurso = "TEC.002";
+$codDisciplina = "TEC.060.0002";
+$quantidade = 2;
 $dao = new CalendarioTurmaDao();
 $dao->abreBanco();
 $calendarioTurma = new CalendarioTurma();
@@ -24,8 +24,8 @@ $calendarioTurma->set_codCurso($codCurso);
 $calendarioTurma->set_codDisciplina($codDisciplina);
 $gerouComSucesso = $dao->transfereTabelaCursoDisciplina($calendarioTurma, $quantidade);
 if ($gerouComSucesso) {
-    echo "<script>window.location='index.php';alert('CUSOS E DISCIPLINA IMPORTADO COM SUCESSO');</script>";
+   echo "<script>window.location='index.php';alert('CUSOS E DISCIPLINA IMPORTADO COM SUCESSO');</script>";
 }
 else{
-   echo "<script>window.location='index.php';alert('OCORREU UM ERRO INESPERADO AO TENTAR IMPORTAR O CURSO');</script>"; 
+  echo "<script>window.location='index.php';alert('OCORREU UM ERRO INESPERADO AO TENTAR IMPORTAR O CURSO');</script>"; 
 }

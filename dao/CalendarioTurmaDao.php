@@ -10,6 +10,7 @@
 
 include_once './entidades/CalendarioTurma.php';
 include_once './entidades/Disciplina.php';
+include_once './entidades/CalendarioEscolar.php';
 class CalendarioTurmaDao {
     private $conexao;
 
@@ -25,30 +26,53 @@ class CalendarioTurmaDao {
     public function geraCalendarioTurma(CalendarioTurma $calendario) {
        try {
             $listaDisciplinas = $this->retornaObjetoTurma($calendario);
-            $dadosCalendarioTurma = array($calendario->get_codCurso(), $calendario->get_codFilial(), $calendario->get_codTurma(), $calendario->get_userCadastrante());
+            $dadosCalendarioTurma = array($calendario->get_codFilial(),$calendario->get_codCurso(), 
+                                          $calendario->get_codTurma(), $calendario->get_userCadastrante());
             $contaAula = 1;
-            $contaTurma = 0;
+            $contaTurma = 1;
             $periodo = "vazio";
 
             for ($index = 0; $index < count($listaDisciplinas); $index++) {
                 $disciplina = $listaDisciplinas[$index];
-                $dadosDisciplina = array($disciplina->get_codDisciplina(), $disciplina->get_descricaoDisciplina(), $disciplina->get_horaDisciplina(),
-                    $disciplina->get_periodo(), $disciplina->get_ordemDeEnsino(),$disciplina->get_subCodigo());
-                if ($periodo != "vazio" && $periodo != $dadosDisciplina[3]) {
+                $dadosDisciplina = array("1" => $disciplina->get_codDisciplina(), 
+                                         "2" => $disciplina->get_descricaoDisciplina(),
+                                         "3" => $disciplina->get_horaDisciplina(),
+                                         "4" => $disciplina->get_periodo(),
+                                         "5" => $disciplina->get_ordemDeEnsino(),
+                                         "6" => $disciplina->get_subCodigo(),
+                                         "7" => $disciplina->get_subDiscOrdem(),
+                                         "8" => $disciplina->get_subHora());
+                if ($periodo != "vazio" && $periodo != $dadosDisciplina[4]) {
                     $contaTurma++;
                 }
-                $numero = (int) $dadosDisciplina[2];
+                $numero = (int) $dadosDisciplina[8];
                 for ($i = 0; $i < $numero; $i++) {
-                    $aula = $contaAula;
-                    $subTurma = $dadosCalendarioTurma[2] . $contaTurma;
-                    $insert = "INSERT INTO PHE_CALENDARIO_TURMA (CODFILIAL,STATUS,CODIGO_CURSO,PERIODO_CURSO,CODIGO_CURSO,CODIGO_DISCIPLINA,"
-                            . "DESCRICAO_DISCIPLINA,ORDEM_DISCIPLINA,CARGAHORA_DISCIPLINA,AULA,USERCADASTRANTE,SUBCODIGOTURMA,CODIGO_SUBDISCIPLINA,) "
-                            . "VALUES ($dadosCalendarioTurma[1],1,'$dadosCalendarioTurma[2]',$dadosDisciplina[3],'$dadosCalendarioTurma[0]',"
-                            . "'$dadosDisciplina[0]','$dadosDisciplina[1]',$dadosDisciplina[4],$dadosDisciplina[2],'$aula','$dadosCalendarioTurma[3]','$subTurma','$dadosCalendarioTurma[5]')";
+                   $aula = $contaAula;
+                   $subTurma = $dadosCalendarioTurma[2] ."_".$contaTurma;
+                   $insert = "INSERT INTO PHE_CALENDARIO_TURMA ("
+                            . "CODFILIAL,"
+                            . "STATUS,"
+                            . "CODIGO_CURSO,"
+                            . "CODIGO_TURMA,"
+                            . "PERIODO_CURSO,"
+                            . "CODIGO_DISCIPLINA,"
+                            . "DESCRICAO_DISCIPLINA,"
+                            . "ORDEM_DISCIPLINA,"
+                            . "CARGAHORA_DISCIPLINA,"
+                            . "AULA,"
+                            . "RECCREATEDBY,"
+                            . "SUBCODIGOTURMA,"
+                            . "CODIGO_SUBDISCIPLINA,"
+                            . "SUBDISC_ORDEM,"
+                            . "SUBDISC_CH,"
+                            . "CODCOLIGADA) "
+                            . "VALUES ($dadosCalendarioTurma[0],1,'$dadosCalendarioTurma[1]','$dadosCalendarioTurma[2]',$dadosDisciplina[4],"
+                            . "'$dadosDisciplina[1]','$dadosDisciplina[2]',$dadosDisciplina[5],$dadosDisciplina[3],'$aula','$dadosCalendarioTurma[3]','$subTurma',"
+                            . "'$dadosDisciplina[6]',$dadosDisciplina[7],$dadosDisciplina[8],3)";
                     mssql_query($insert);
                     $contaAula++;
                 }
-                $periodo = $dadosDisciplina[3];
+                $periodo = $dadosDisciplina[4];
             }
             return true;
         } catch (Exception $ex) {
@@ -58,9 +82,7 @@ class CalendarioTurmaDao {
     public function transfereTabelaCursoDisciplina(CalendarioTurma $calendarioTurma,$quantidade) {
         try {
             $obj = $this->retornaTabelaCursoDisciplina($calendarioTurma);
-            if($obj->get_ch() == null || $obj->get_ch() == 0 || $obj->get_ch() == ''){
-                $obj->set_ch(0);
-            }
+            $funcionou = false;
             $arrayDados = array(
                                 "1" => $calendarioTurma->get_codFilial(),
                                 "2" => $calendarioTurma->get_codCurso(),
@@ -70,7 +92,6 @@ class CalendarioTurmaDao {
                                 "6" => $calendarioTurma->get_codDisciplina(),
                                 "7" => $obj->get_ordemDeEnsino(),
                                 "8" => $obj->get_descricaoDisciplina(),
-                                "9" => $obj->get_ch(),
                                 "10" => $obj->get_objetivoSgrade(),
                                 "11" => $obj->get_recmodifiendo(),
                                 "12" => $obj->get_nomeDisciplina(),
@@ -79,12 +100,9 @@ class CalendarioTurmaDao {
                                 "15" => $obj->get_horaDisciplina(),
                                 "16" => $obj->get_objetivo(),
                                 "17" => $obj->get_codTipoCurso(),
-                                "18" => $obj->get_cargaHorariaTeorica(),
-                                "19" => $obj->get_cargaHorariaPratica(),
-                                "20" => $obj->get_chLaboratorio(),
                                 "21" => $obj->get_idftDisciplina(),
                                 "22" => $obj->get_recmodifidonDisc(),
-                                "23" => $obj->get_status()
+                                "23" => $obj->get_status()      
                     );
             $cont = 1;
             for ($index = 0; $index < $quantidade; $index++) {
@@ -98,7 +116,6 @@ class CalendarioTurmaDao {
                        . "CODDISC_SDISCGRADE,"
                        . "POSHIST_SDISCGRADE,"
                        . "DESCRICAO_SDISCGRADE,"
-                       . "CH_SDISCGRADE,"
                        . "OBJETIVO_SDISCGRADE,"
                        . "RECMODIFIEDON_SDISCGRADE,"
                        . "NOME_SDISCIPLINA,"
@@ -107,9 +124,6 @@ class CalendarioTurmaDao {
                        . "CH_SDISCIPLINA_SDISCIPLINA,"
                        . "OBJETIVO_SDISCIPLINA,"
                        . "CODTIPOCURSO_SDISCIPLINA,"
-                       . "CHTEORICA_SDISCIPLINA,"
-                       . "CHPRATICA_SDISCIPLINA,"
-                       . "CHLABORATORIAL_SDISCIPLINA,"
                        . "IDFT_SDISCIPLINA,"
                        . "RECMODIFIEDON_SDISCIPLINA,"
                        . "STATUS,"
@@ -117,15 +131,64 @@ class CalendarioTurmaDao {
                        . "SUBDISC_CODDISC,"
                        . "SUBDISC_ORDEM,"
                        . "CODCOLIGADA) VALUES ($arrayDados[1],'$arrayDados[2]','$arrayDados[3]','$arrayDados[4]',$arrayDados[5],'$arrayDados[6]',$arrayDados[7],"
-                       . "'$arrayDados[8]',$arrayDados[9],'$arrayDados[10]','$arrayDados[11]','$arrayDados[12]','$arrayDados[13]','$arrayDados[14]',$arrayDados[15],"
-                       . "'$arrayDados[16]',$arrayDados[17],$arrayDados[18],$arrayDados[19],$arrayDados[20],$arrayDados[21],'$arrayDados[22]',$arrayDados[23],'$subDescricao','$subCod',$cont,3)";
+                       . "'$arrayDados[8]','$arrayDados[10]','$arrayDados[11]','$arrayDados[12]','$arrayDados[13]','$arrayDados[14]',$arrayDados[15],"
+                       . "'$arrayDados[16]',$arrayDados[17],$arrayDados[21],'$arrayDados[22]',$arrayDados[23],'$subDescricao','$subCod',$cont,3)";
                $cont++;
-               mssql_query($insert);
+               $sucesso = mssql_query($insert);
+               if ($sucesso) {
+                   $funcionou = true;
+               }
+            }
+            return $funcionou;
+        } catch (Exception $exc) {
+            echo 'Exceção capturada: ', $exc->getMessage(), "\n";
+        }
+    }
+    public function geraDiasCalendarioTurma(CalendarioTurma $calendario) {
+        try {
+            $codFilial = $calendario->get_codFilial();
+            $codTurma = $calendario->get_codTurma();
+            $userModify = $calendario->get_userCadastrante();
+            $diasRetornados = $this->retornaCalendarioEscola($calendario);
+            $idCalendarioTurma = $this->retornaIdCalendarioTurma($calendario);
+            $limit = 0;
+            if (count($idCalendarioTurma) >= count($diasRetornados)) {
+                $limit += count($diasRetornados);
+            }
+            elseif(count($idCalendarioTurma) <= count($diasRetornados)){
+                $limit += count($idCalendarioTurma);
+            }
+            for ($index = 0; $index < $limit; $index++) {
+                $calendarioEscola = $diasRetornados[$index];
+                $arrayDados = array($calendarioEscola->get_horaIni(), $calendarioEscola->get_horaFini(),
+                                    $calendarioEscola->get_diaDaSemana(), $calendarioEscola->get_dataDia());
+                $diaSemana = $calendarioEscola->get_diaDaSemana();
+                $sql = "SELECT * FROM PHE_STURMA WHERE CODFILIAL = $codFilial AND CODIGOTURMA_CC = '$codTurma' AND DIASEMANA LIKE '%$diaSemana%'";
+                $result = mssql_query($sql);
+                if (mssql_num_rows($result)) {
+                    $insert = "UPDATE dbo.PHE_CALENDARIO_TURMA SET HORA_INICIAL = '$arrayDados[0]', HORA_FINAL = '$arrayDados[1]', "
+                    . "DIASEMANA = '$arrayDados[2]', DATADIA = '$arrayDados[3]', RECMODIFIEDBY = '$userModify' "
+                    . "WHERE CODFILIAL = $codFilial AND CODIGO_TURMA = '$codTurma' "
+                    . "AND ID = $idCalendarioTurma[$index]";
+                    mssql_query($insert);
+                }
             }
             return true;
         } catch (Exception $exc) {
             echo 'Exceção capturada: ', $exc->getMessage(), "\n";
         }
+    }
+
+    private function retornaIdCalendarioTurma(CalendarioTurma $calendario) {
+        $codFilial = $calendario->get_codFilial();
+        $codTurma = $calendario->get_codTurma();
+        $select = "SELECT * FROM PHE_CALENDARIO_TURMA T WHERE CODFILIAL = $codFilial AND CODIGO_TURMA = '$codTurma' ORDER BY T.ORDEM_DISCIPLINA";
+        $resultado = mssql_query($select);
+        $listadeIds = array();
+        while ($linha = mssql_fetch_array($resultado)) {
+            $listadeIds[] = $linha['ID'];
+        }
+        return $listadeIds;
     }
 
     private function retornaObjetoTurma(CalendarioTurma $calendario) {
@@ -135,7 +198,6 @@ class CalendarioTurmaDao {
             $query = mssql_query($select);
             $listaDeDisciplina = array();
             while ($linha = mssql_fetch_array($query)) {
-                //echo "30";
                 $disciplina = new CursoDisciplina();
                 $disciplina->set_codDisciplina($linha['CODDISC_SDISCGRADE']);
                 $disciplina->set_descricaoDisciplina($linha['DESCRICAO_SDISCGRADE']);
@@ -143,6 +205,8 @@ class CalendarioTurmaDao {
                 $disciplina->set_periodo($linha['CODPERIODO_SDISCGRADE']);
                 $disciplina->set_ordemDeEnsino($linha['POSHIST_SDISCGRADE']);
                 $disciplina->set_subCodigo($linha['SUBDISC_CODDISC']);
+                $disciplina->set_subDiscOrdem($linha['SUBDISC_ORDEM']);
+                $disciplina->set_subHora($linha['SUBDISC_CH']);
                 $listaDeDisciplina[] = $disciplina;
             }
             return $listaDeDisciplina;
@@ -151,6 +215,50 @@ class CalendarioTurmaDao {
         }
     }
 
+    private function retornaCalendarioEscola(CalendarioTurma $calendario){
+        $codTurno = $calendario->get_codTurno();
+        $codFilial = $calendario->get_codFilial();
+        $campo = $this->retornaTipoCalendario($calendario);
+        $select = "";
+        if ($campo[2] == 1) {
+            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE CODFILIAL = $codFilial AND CODTURNO = $codTurno AND $campo[0] = 0 AND $campo[1] = 1 AND DIASEMANA <> 'SAB'";
+        }
+        else{
+            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE CODFILIAL = $codFilial AND CODTURNO = $codTurno AND $campo[0] = 0 AND $campo[1] = 1";
+        }
+        $result = mssql_query($select);
+        $registrosCalendarioEscola = array();
+        while ($linha = mssql_fetch_array($result)) {
+            $calendarioEscola = new CalendarioEscolar();
+            $calendarioEscola->set_horaIni($linha['HORINI']);
+            $calendarioEscola->set_horaFini($linha['HORFIM']);
+            $calendarioEscola->set_dataDia($linha['DATADIA']);
+            $calendarioEscola->set_diaDaSemana($linha['DIASEMANA']);
+            $registrosCalendarioEscola[] = $calendarioEscola;
+        }
+        return $registrosCalendarioEscola;
+    }
+    private function retornaTipoCalendario(CalendarioTurma $calendarTurma){
+        $codFilial = $calendarTurma->get_codFilial();
+        $codTurma = $calendarTurma->get_codTurma();
+       
+        $select = "SELECT * FROM PHE_STURMA WHERE CODFILIAL = $codFilial AND CODIGOTURMA_CC = '$codTurma'";
+        $result = mssql_query($select);
+        $tipoCalendario = "";
+        while ($linha = mssql_fetch_array($result)) {
+            $tipoCalendario = $linha['CALENDARIO_CC'];
+        }
+        switch ($tipoCalendario) {
+            case 1:
+                return $tipoCalendar = array("FNL","STATUS",1);
+            case 2:
+                return $tipoCalendar = array("FNL_CT","STATUS_CT",1);
+            case 3:
+                return $tipoCalendar = array("FNL_SS,STATUS_SS",0);
+            case 4:
+                return $tipoCalendar = array("FNL_CTSS,STATUS_CTSS",0);
+        }
+    }
     private function retornaTabelaCursoDisciplina(CalendarioTurma $calendario) {
         try {
             $codCurso = $calendario->get_codCurso();
@@ -181,7 +289,7 @@ class CalendarioTurmaDao {
                 $objetoDisciplina->set_status($linha['STATUS']);
                 $objetoDisciplina->set_codCurso($linha['CODCURSO_SDISCGRADE']);
                 $objetoDisciplina->set_objetivoSgrade($linha['OBJETIVO_SDISCGRADE']);
-                $objetoDisciplina->set_ch($linha['CH_SDISCGRADE']);
+               // $objetoDisciplina->set_ch($linha['CH_SDISCGRADE']);
                 return $objetoDisciplina;
             }  
         } catch (Exception $ex) {

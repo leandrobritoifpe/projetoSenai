@@ -34,8 +34,22 @@ class CursoDisciplina {
     private $objetivoSgrade;
     private $ch;
     private $subCodigo;
+    private $subDiscOrdem;
+    private $subHora;
     
+    public function set_subHora($subHora){
+        $this->subHora = $subHora;
+    }
+    public function get_subHora(){
+        return $this->subHora;
+    }
     
+    public function set_subDiscOrdem ($subDiscOrdem ){
+        $this->subDiscOrdem = $subDiscOrdem;
+    }
+    public function get_subDiscOrdem (){
+        return $this->subDiscOrdem;
+    }
     public function set_subCodigo($subCodigo){
         $this->subCodigo = $subCodigo;
     }

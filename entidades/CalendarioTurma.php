@@ -4,7 +4,7 @@
  * CLASSE CalendarioEscolarDao
  * OBJETIVO: PORTADOR DE ATRIBUTOS
  * CRIADA: 20/09/2016
- * ULTIMA ATUALIZACAO : 20/09/2016
+ * ULTIMA ATUALIZACAO : 21/09/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -13,7 +13,7 @@ class CalendarioTurma {
     private $aula;
     private $idHoraTurma;
     private $codFilial;
-    private $data;
+    private $dataInicial;
     private $dataEfetiva;
     private $horaInicial;
     private $horaFinal;
@@ -26,6 +26,15 @@ class CalendarioTurma {
     private $codCurso;
     private $codDisciplina;
     
+    
+     
+    public function set_dataInicial($dataInicial){
+        $this->dataInicial = $dataInicial;
+    }
+
+    public function get_dataInicial(){
+        return $this->dataInicial;
+    }
     public function set_codDisciplina($codDisciplina){
         $this->codDisciplina = $codDisciplina;
     }
