@@ -1,7 +1,7 @@
 <?php
 
 /*
- * CLASSE CalendarioEscolarDao
+ * CLASSE CalendarioTurma.php
  * OBJETIVO: PORTADOR DE ATRIBUTOS
  * CRIADA: 20/09/2016
  * ULTIMA ATUALIZACAO : 21/09/2016

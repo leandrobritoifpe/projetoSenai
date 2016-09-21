@@ -3,7 +3,7 @@
  * CLASSE CalendarioTurmaDao.php
  * OBJETIVO: SERVIR DE COMUNICAÇÃO COM O BANCO
  * CRIADA: 20/09/2016
- * ULTIMA ATUALIZACAO : 20/09/2016
+ * ULTIMA ATUALIZACAO : 21/09/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -218,13 +218,14 @@ class CalendarioTurmaDao {
     private function retornaCalendarioEscola(CalendarioTurma $calendario){
         $codTurno = $calendario->get_codTurno();
         $codFilial = $calendario->get_codFilial();
+        $data = $calendario->get_dataInicial();
         $campo = $this->retornaTipoCalendario($calendario);
         $select = "";
         if ($campo[2] == 1) {
-            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE CODFILIAL = $codFilial AND CODTURNO = $codTurno AND $campo[0] = 0 AND $campo[1] = 1 AND DIASEMANA <> 'SAB'";
+            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE CODFILIAL = $codFilial AND CODTURNO = $codTurno AND $campo[0] = 0 AND $campo[1] = 1 AND DIASEMANA <> 'SAB' AND DATADIA >= '$data'";
         }
         else{
-            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE CODFILIAL = $codFilial AND CODTURNO = $codTurno AND $campo[0] = 0 AND $campo[1] = 1";
+            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE CODFILIAL = $codFilial AND CODTURNO = $codTurno AND $campo[0] = 0 AND $campo[1] = 1 AND DATADIA >= '$data'";
         }
         $result = mssql_query($select);
         $registrosCalendarioEscola = array();

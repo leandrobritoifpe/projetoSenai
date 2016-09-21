@@ -1,5 +1,12 @@
 <?php
-
+/*
+ * CLASSE CalendarioEscolarDao
+ * OBJETIVO: SERVIR DE CONTROLE
+ * CRIADA: 21/09/2016
+ * ULTIMA ATUALIZACAO : 21/09/2016
+ * 
+ * DS-> LEANDRO BRITO
+ */
 include './gerenciadorDeFuncoes.php';
 include_once './entidades/CalendarioTurma.php';
 include_once './dao/CalendarioTurmaDao.php';
