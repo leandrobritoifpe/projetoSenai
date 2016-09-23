@@ -16,7 +16,7 @@ $dao->abreBanco();
 
 $codCurso = 'TEC.002';
 $codFilial = 1;
-$codTurma = 'TA.0001.';
+$codTurma = 'T.02';
 $codTurno = 1;
 $dataInicial = '2017-01-03';
 $userCadastrante = 'DARIO';

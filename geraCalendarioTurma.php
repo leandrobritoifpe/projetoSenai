@@ -19,7 +19,7 @@ $dao->abreBanco();
 
 $codCurso = 'TEC.002';
 $codFilial = 1;
-$codTurma = 'T.001';
+$codTurma = 'T.02';
 $userCadastrante = 'DARIO';
 
 $calendarioTurma = new CalendarioTurma();

@@ -3,7 +3,7 @@
  * CLASSE DiaNaoLetivoDao
  * OJETIVO : RESPOSAVEL POR TODA A COMUNICACAO COM O BANCO DE DADOS
  * CRIADA : 25/08/2016
- * ULTIMA ATUALIZACAO : 16/09/2016
+ * ULTIMA ATUALIZACAO : 23/09/2016
  * 
  * DS -> LEANDRO BRITO ;)
  */
@@ -54,7 +54,7 @@ class DiaNaoLetivoDao {
     }
     //METODO QUE INSERI PERIODO NÃO LETIVO, SOMENTE PARA CURSO TECNICOS
     public function inseriPeridoNaoLetivo($dataInicial, $dataFinal, $descricao, $codFilial){
-       $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DESCRICAO_CT = $descricao, STATUS_CT  = 0, DLETIVO_CT = 0, HDLETIVO_CT = 0, FNL_CT = 1, STATUS_CTSS = 0, DLETIVO_CTSS = 0, HDLETIVO_CTSS = 0, FNL_CTSS = 1 WHERE DATADIA BETWEEN '$dataInicial' AND '$dataFinal' AND CODFILIAL = $codFilial";
+       $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DESCRICAO_CT = $descricao, DESCRICAO_CTSS = $descricao, STATUS_CT  = 0, DLETIVO_CT = 0, HDLETIVO_CT = 0, FNL_CT = 1, STATUS_CTSS = 0, DLETIVO_CTSS = 0, HDLETIVO_CTSS = 0, FNL_CTSS = 1 WHERE DATADIA BETWEEN '$dataInicial' AND '$dataFinal' AND CODFILIAL = $codFilial";
        $result = mssql_query($update);
        if ($result) {
             return true;

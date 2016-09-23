@@ -6,7 +6,7 @@
  * CLASSE CalendarioEscolarDao
  * OBJETIVO: REALIZAR TODA AS COMUNICAÇOES COM O BANCO DE DADOS SQL SERVER
  * CRIADA: 25/08/2016
- * ULTIMA ATUALIZACAO : 16/09/2016
+ * ULTIMA ATUALIZACAO : 23/09/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -108,7 +108,10 @@ class CalendarioEscolarDao {
             echo $exc->getTraceAsString();
         }
     }
-
+    public function limpaDescricaSabado($codFilial){
+        $update = "UPDATE PHE_CALENDARIO_ESCOLA SET DESCRICAO = 11, DESCRICAO_CT = 11 WHERE CODFILIAL = $codFilial AND DIASEMANA = 'SAB'";
+        mssql_query($update);
+    }
     private function retornaArrayVazio($arrayCount){
         $array = array();
         for ($index = 0; $index < count($arrayCount); $index++) {

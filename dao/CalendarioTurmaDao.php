@@ -3,7 +3,7 @@
  * CLASSE CalendarioTurmaDao.php
  * OBJETIVO: SERVIR DE COMUNICAÇÃO COM O BANCO
  * CRIADA: 20/09/2016
- * ULTIMA ATUALIZACAO : 21/09/2016
+ * ULTIMA ATUALIZACAO : 23/09/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -79,6 +79,13 @@ class CalendarioTurmaDao {
             echo 'Exceção capturada: ', $ex->getMessage(), "\n";
         }
     }
+    public function geraCalendarioSemDividirDisciplina(CalendarioTurma $calendarioTurma){
+        try{
+            
+        } catch (Exception $ex) {
+            echo 'Exceção capturada: ', $ex->getMessage(), "\n";
+        }
+    }
     public function transfereTabelaCursoDisciplina(CalendarioTurma $calendarioTurma,$quantidade) {
         try {
             $obj = $this->retornaTabelaCursoDisciplina($calendarioTurma);
@@ -149,16 +156,19 @@ class CalendarioTurmaDao {
             $codFilial = $calendario->get_codFilial();
             $codTurma = $calendario->get_codTurma();
             $userModify = $calendario->get_userCadastrante();
-            $diasRetornados = $this->retornaCalendarioEscola($calendario);
+            $diasRetornados = $this->retornaObjetoCalendarioEscola($calendario);
             $idCalendarioTurma = $this->retornaIdCalendarioTurma($calendario);
             $limit = 0;
+           
             if (count($idCalendarioTurma) >= count($diasRetornados)) {
                 $limit += count($diasRetornados);
             }
             elseif(count($idCalendarioTurma) <= count($diasRetornados)){
                 $limit += count($idCalendarioTurma);
             }
+           
             for ($index = 0; $index < $limit; $index++) {
+                
                 $calendarioEscola = $diasRetornados[$index];
                 $arrayDados = array($calendarioEscola->get_horaIni(), $calendarioEscola->get_horaFini(),
                                     $calendarioEscola->get_diaDaSemana(), $calendarioEscola->get_dataDia());
@@ -166,7 +176,7 @@ class CalendarioTurmaDao {
                 $sql = "SELECT * FROM PHE_STURMA WHERE CODFILIAL = $codFilial AND CODIGOTURMA_CC = '$codTurma' AND DIASEMANA LIKE '%$diaSemana%'";
                 $result = mssql_query($sql);
                 if (mssql_num_rows($result)) {
-                    $insert = "UPDATE dbo.PHE_CALENDARIO_TURMA SET HORA_INICIAL = '$arrayDados[0]', HORA_FINAL = '$arrayDados[1]', "
+                   $insert = "UPDATE dbo.PHE_CALENDARIO_TURMA SET HORA_INICIAL = '$arrayDados[0]', HORA_FINAL = '$arrayDados[1]', "
                     . "DIASEMANA = '$arrayDados[2]', DATADIA = '$arrayDados[3]', RECMODIFIEDBY = '$userModify' "
                     . "WHERE CODFILIAL = $codFilial AND CODIGO_TURMA = '$codTurma' "
                     . "AND ID = $idCalendarioTurma[$index]";
@@ -178,7 +188,19 @@ class CalendarioTurmaDao {
             echo 'Exceção capturada: ', $exc->getMessage(), "\n";
         }
     }
-
+    public function inseriCargaHoraDisciplina($cargaHora,$codFilial,$disciplina){
+        try {
+            $update = "UPDATE PHE_CURSO_DSICIPLINA_ESCOLA SET SUBDISC_CH = $cargaHora WHERE CODFILIAL = $codFilial AND CODDISC_SDISCGRADE = '$disciplina'";
+            $result = mssql_query($update);
+            if ($result) {
+                return true;
+            }else{
+                return false;
+            }
+        } catch (Exception $ex) {
+            echo 'Exceção capturada: ', $ex->getMessage(), "\n";
+        }
+    }
     private function retornaIdCalendarioTurma(CalendarioTurma $calendario) {
         $codFilial = $calendario->get_codFilial();
         $codTurma = $calendario->get_codTurma();
@@ -190,7 +212,23 @@ class CalendarioTurmaDao {
         }
         return $listadeIds;
     }
-
+    public function retornaListaIdDisciplina($codCurso){
+        try {
+            $select = "SELECT * FROM PHE_CURSO_DSICIPLINA CD "
+                    . "WHERE CD.CODCURSO_SDISCGRADE = '$codCurso'";
+            $result = mssql_query($select);
+            $listaIdDisciplina = array();
+            while ($linha = mssql_fetch_array($result)) {
+                $calendario = new CursoDisciplina();
+                $calendario->set_codDisciplina($linha['CODDISC_SDISCGRADE']);
+                $calendario->set_ch($linha['CH_SDISCIPLINA_SDISCIPLINA']);
+                $listaIdDisciplina[] = $calendario;
+            }
+            return $listaIdDisciplina;
+        } catch (Exception $ex) {
+            echo 'Exceção capturada: ', $ex->getMessage(), "\n";
+        }
+    }
     private function retornaObjetoTurma(CalendarioTurma $calendario) {
         try {
             $codCurso = $calendario->get_codCurso();
@@ -215,29 +253,60 @@ class CalendarioTurmaDao {
         }
     }
 
-    private function retornaCalendarioEscola(CalendarioTurma $calendario){
+    private function retornaSqlEspecifico(CalendarioTurma $calendario) {
         $codTurno = $calendario->get_codTurno();
         $codFilial = $calendario->get_codFilial();
+        //$codTurno = $calendario->get_codTurno();
         $data = $calendario->get_dataInicial();
         $campo = $this->retornaTipoCalendario($calendario);
+        $listaDeDiasSemana = $this->retornaDiasDeAula($calendario);
+        $quantidade = count($listaDeDiasSemana);
         $select = "";
-        if ($campo[2] == 1) {
-            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE CODFILIAL = $codFilial AND CODTURNO = $codTurno AND $campo[0] = 0 AND $campo[1] = 1 AND DIASEMANA <> 'SAB' AND DATADIA >= '$data'";
+        switch ($quantidade) {
+            case 1:
+                $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE CODFILIAL = $codFilial AND CODTURNO = $codTurno "
+                    . "AND $campo[0] = 0 AND $campo[1] = 1 AND DATADIA >= '$data' AND DIASEMANA = '$listaDeDiasSemana[0]' ORDER BY DATADIA";
+                break;
+            case 2:
+                $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE CODFILIAL = $codFilial AND CODTURNO = $codTurno "
+                    . "AND $campo[0] = 0 AND $campo[1] = 1 AND DATADIA >= '$data' AND (DIASEMANA = '$listaDeDiasSemana[0]' OR DIASEMANA = '$listaDeDiasSemana[1]')";
+                break;
+            case 3:
+                $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE CODFILIAL = $codFilial AND CODTURNO = $codTurno "
+                    . "AND $campo[0] = 0 AND $campo[1] = 1 AND DATADIA >= '$data' AND (DIASEMANA = '$listaDeDiasSemana[0]' OR DIASEMANA = '$listaDeDiasSemana[1]' "
+                    . "OR DIASEMANA = '$listaDeDiasSemana[2]') ORDER BY DATADIA";
+                break;
+            case 4:
+                $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE CODFILIAL = $codFilial AND CODTURNO = $codTurno "
+                    . "AND $campo[0] = 0 AND $campo[1] = 1 AND DATADIA >= '$data' AND (DIASEMANA = '$listaDeDiasSemana[0]' OR DIASEMANA = '$listaDeDiasSemana[1]' "
+                    . "OR DIASEMANA = '$listaDeDiasSemana[2]' OR DIASEMANA = '$listaDeDiasSemana[3]') ORDER BY DATADIA";
+                break;
+             case 5:
+                $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE CODFILIAL = $codFilial AND CODTURNO = $codTurno "
+                    . "AND $campo[0] = 0 AND $campo[1] = 1 AND DATADIA >= '$data' AND (DIASEMANA = '$listaDeDiasSemana[0]' OR DIASEMANA = '$listaDeDiasSemana[1]' "
+                    . "OR DIASEMANA = '$listaDeDiasSemana[2]' OR DIASEMANA = '$listaDeDiasSemana[3]' OR DIASEMANA = '$listaDeDiasSemana[4]') ORDER BY DATADIA";
+                break;
+            case 6:
+                $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE CODFILIAL = $codFilial AND CODTURNO = $codTurno "
+                    . "AND $campo[0] = 0 AND $campo[1] = 1 AND DATADIA >= '$data' AND (DIASEMANA = '$listaDeDiasSemana[0]' OR DIASEMANA = '$listaDeDiasSemana[1]' "
+                    . "OR DIASEMANA = '$listaDeDiasSemana[2]' OR DIASEMANA = '$listaDeDiasSemana[3]' OR DIASEMANA = '$listaDeDiasSemana[4]' OR DIASEMANA = '$listaDeDiasSemana[5]') ORDER BY DATADIA";
+                break;
         }
-        else{
-            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE CODFILIAL = $codFilial AND CODTURNO = $codTurno AND $campo[0] = 0 AND $campo[1] = 1 AND DATADIA >= '$data'";
-        }
-        $result = mssql_query($select);
+        return $select;     
+   }
+    private function retornaObjetoCalendarioEscola(CalendarioTurma $calendario){
+        $sql = $this->retornaSqlEspecifico($calendario);
+        $result = mssql_query($sql);
         $registrosCalendarioEscola = array();
-        while ($linha = mssql_fetch_array($result)) {
-            $calendarioEscola = new CalendarioEscolar();
-            $calendarioEscola->set_horaIni($linha['HORINI']);
-            $calendarioEscola->set_horaFini($linha['HORFIM']);
-            $calendarioEscola->set_dataDia($linha['DATADIA']);
-            $calendarioEscola->set_diaDaSemana($linha['DIASEMANA']);
-            $registrosCalendarioEscola[] = $calendarioEscola;
-        }
-        return $registrosCalendarioEscola;
+            while ($linha = mssql_fetch_array($result)) {
+                $calendarioEscola = new CalendarioEscolar();
+                $calendarioEscola->set_horaIni($linha['HORINI']);
+                $calendarioEscola->set_horaFini($linha['HORFIM']);
+                $calendarioEscola->set_dataDia($linha['DATADIA']);
+                $calendarioEscola->set_diaDaSemana($linha['DIASEMANA']);
+                $registrosCalendarioEscola[] = $calendarioEscola;
+            }
+            return $registrosCalendarioEscola;
     }
     private function retornaTipoCalendario(CalendarioTurma $calendarTurma){
         $codFilial = $calendarTurma->get_codFilial();
@@ -259,6 +328,17 @@ class CalendarioTurmaDao {
             case 4:
                 return $tipoCalendar = array("FNL_CTSS,STATUS_CTSS",0);
         }
+    }
+    private function retornaDiasDeAula(CalendarioTurma $calendarioTurma){
+        $codTurma = $calendarioTurma->get_codTurma();
+        $codFilial = $calendarioTurma->get_codFilial();
+        $select  = "SELECT * FROM PHE_STURMA WHERE CODFILIAL = $codFilial AND CODIGOTURMA_CC = '$codTurma'";
+        $result = mssql_query($select);
+        while ($linha = mssql_fetch_array($result)) {
+            $diasDeaula = $linha['DIASEMANA'];
+        }
+        $arrayDeDias = $array = (explode('-', $diasDeaula, -1));
+        return $arrayDeDias;
     }
     private function retornaTabelaCursoDisciplina(CalendarioTurma $calendario) {
         try {

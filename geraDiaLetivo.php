@@ -1,8 +1,8 @@
 <?php
 
 /*
- * CLASSE DiaNaoLetivoDao
- * OJETIVO : RESPOSAVEL POR TODA A COMUNICACAO COM O BANCO DE DADOS
+ * 
+ * OJETIVO : servir de controle
  * CRIADA : 25/08/2016
  * ULTIMA ATUALIZACAO : 15/09/2016
  * 

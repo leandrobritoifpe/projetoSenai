@@ -4,7 +4,7 @@
  * ARQUVIO geradorDeCalendario
  * OBNJETIVO: SERVIR DE CONTROLE PARA DAO
  * CRIADO : 25/08/2016
- * ULTIMA ATUALIZACAO : 15/09/2016
+ * ULTIMA ATUALIZACAO : 23/09/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -105,7 +105,7 @@ if (isset($_POST['DATAFIN'])) {
         }
 
         $atualizouCalendarioComFeriados = $dao->atualizaCalendarioComFeriados($calendarioEscolar);
-
+        $dao->limpaDescricaSabado(1);
         if ($cont == 0 && $atualizouCalendarioComFeriados == 0) {
             if ($dao->geraTodosDiaLetivo(1)) {
                 $dao->fechaBanco();
