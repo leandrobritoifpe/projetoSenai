@@ -25,8 +25,25 @@ class CalendarioTurma {
     private $userCadastrante;
     private $codCurso;
     private $codDisciplina;
+    private $id;
+    private $diasRecesso;
     
     
+    public function set_diasRecesso($diasRecesso){
+        $this->diasRecesso = $diasRecesso;
+    }
+
+    public function get_diasRecesso(){
+        return $this->diasRecesso;
+    }
+    
+    public function set_id($id){
+        $this->id = $id;
+    }
+
+    public function get_id(){
+        return $this->id;
+    }
      
     public function set_dataInicial($dataInicial){
         $this->dataInicial = $dataInicial;

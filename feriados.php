@@ -49,5 +49,5 @@ else{
 }
 
 $ano = '2016-07-05';
-$rest = substr($ano,5,2);  // retorna "abcde"
+$rest = substr($ano,0,4);  // retorna "abcde"
 echo $rest;

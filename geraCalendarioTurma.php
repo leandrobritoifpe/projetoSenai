@@ -17,7 +17,7 @@ include_once './dao/CalendarioTurmaDao.php';
 $dao = new CalendarioTurmaDao();
 $dao->abreBanco();
 
-$codCurso = 'TEC.002';
+$codCurso = 'TEC.063';
 $codFilial = 1;
 $codTurma = 'T.02';
 $userCadastrante = 'DARIO';
@@ -33,7 +33,9 @@ $dao->fechaBanco();
 
 if($gerouClendario){
    echo "<script>window.location='index.php';alert('CALENDARIO DA TURMA GERADO COM SUCESSO');</script>";
+   
 }
 else{
   echo "<script>window.location='index.php';alert('OCORREU UM ERRO AO TENTAR GERAR O CALENDARIO');</script>"; 
+    
 }
