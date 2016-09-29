@@ -3,13 +3,14 @@
  * CLASSE CalendarioEscolarDao
  * OBJETIVO: REALIZAR TODA AS COMUNICAÇOES COM O BANCO DE DADOS SQL SERVER
  * CRIADA: 08/09/2016
- * ULTIMA ATUALIZACAO : 15/09/2016
+ * ULTIMA ATUALIZACAO : 29/09/2016
  * 
  * DS-> LEANDRO BRITO
  */
 include './dao/DiaNaoLetivoDao.php';
 include './gerenciadorDeFuncoes.php';
-
+$data = '2017-09-07';
+$ano = substr($data,0,5);
 // INPORTANOD CLASSE 
 include_once './entidades/DiaNaoLetivo.php';
 include_once './entidades/CalendarioEscolar.php';
@@ -23,7 +24,7 @@ if ($funcionou) {
     $mensagem = exibeMesagensParaUsuario(14);
     $daoCalendario =  new CalendarioEscolarDao();
     $daoCalendario->abrirConexao();
-    $gerouDiasLetivos = $daoCalendario->geraTodosDiaLetivo(1);
+    $gerouDiasLetivos = $daoCalendario->geraTodosDiaLetivo(1,$ano);
     $daoCalendario->fechaBanco();
     if ($gerouDiasLetivos) {
         echo "<script>window.location='index.php';alert('$mensagem');</script>";

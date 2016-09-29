@@ -3,7 +3,7 @@
 /* ARQUVOS CadastraDiaNaoLetivo
  * OBJETIVO: SERVIR DE CONTROLE PARA O DAO
  * CRIADA: 31/08/2016
- * ULTIMA ATUALIZACAO : 15/09/2016
+ * ULTIMA ATUALIZACAO : 19/09/2016
  * 
  * DS -> LEANDRO BRITO */
 
@@ -20,12 +20,13 @@ $dao = new DiaNaoLetivoDao();
 $dao->abreBanco();
 $inseriu = $dao->inseriDiaNaoLetivoPorPerido(1, '2017-02-24', '2017-02-28', 5);
 $dao->fechaBanco();
-
+$data = '2017-09-07';
+$ano = substr($data,0,5);
 //VERIFICANDO SE DEU CERTO A INSERÇÃO DOS DIAS NÃO LETIVOS
 if ($inseriu) {
     $daoCalendario = new CalendarioEscolarDao();
     $daoCalendario->abrirConexao();
-    $gerouDiaLetivo = $daoCalendario->geraTodosDiaLetivo(1);
+    $gerouDiaLetivo = $daoCalendario->geraTodosDiaLetivo(1,$ano);
     $daoCalendario->fechaBanco();
     if ($gerouDiaLetivo) {
         $mensagem = exibeMesagensParaUsuario(7);

@@ -4,7 +4,7 @@
  * 
  * OBJETIVO: SERVIR DE CONTROLE
  * CRIADA: 27/09/2016
- * ULTIMA ATUALIZACAO : 27/09/2016
+ * ULTIMA ATUALIZACAO : 29/09/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -18,10 +18,10 @@ $dao->abreBanco();
 
 $codCurso = 'TEC.063';
 $codFilial = 1;
-$codTurma = 'TEC.063.PLAN.R3';
+$codTurma = 'TEC.063.PLAN.';
 $codTurno = 1;
-$dataInicial = '2017-04-03';
-$aula = 800;
+$dataInicial = '2017-01-31';
+$aula = 30;
 $userCadastrante = 'DARIO';
 $diasRecesso = 5;
 

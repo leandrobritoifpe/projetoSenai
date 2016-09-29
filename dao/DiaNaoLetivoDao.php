@@ -3,7 +3,7 @@
  * CLASSE DiaNaoLetivoDao
  * OJETIVO : RESPOSAVEL POR TODA A COMUNICACAO COM O BANCO DE DADOS
  * CRIADA : 25/08/2016
- * ULTIMA ATUALIZACAO : 23/09/2016
+ * ULTIMA ATUALIZACAO : 29/09/2016
  * 
  * DS -> LEANDRO BRITO ;)
  */
@@ -39,7 +39,7 @@ class DiaNaoLetivoDao {
         // SELECT NO BANCO SQL 
       $meDia = $rest = substr($diaNaoLetivo->get_data(), 5, 9);
         if (!$this->verificaSeDataExiste($meDia,$diaNaoLetivo->get_codFilial())) {
-            $select = "INSERT dbo.PHE_DIAS_NAO_LETIVOS (DESCRICAO,DATA,STATUS,RECCREATEDBY,TIPO)"
+            $select = "INSERT dbo.PHE_DIAS_NAO_LETIVOS (DESCRICAO,DATADIA,STATUS,RECCREATEDBY,TIPO)"
                     . "VALUES ($arrayDados[0],'$arrayDados[1]',$arrayDados[2],'$arrayDados[3]',$arrayDados[4])";
             $sucesso = mssql_query($select);
             if ($sucesso) {
@@ -110,7 +110,7 @@ class DiaNaoLetivoDao {
         $diaMes = "";
         if (mssql_num_rows($resultado)) {
             while ($linha = mssql_fetch_array($resultado)) {
-                $diaMes = substr($linha['DATA'], 5, 9);
+                $diaMes = substr($linha['DATADIA'], 5, 9);
             }
             if ($this->atualizaCalendarioAposDeleteFeriado($diaMes,$codFilial)) {
                 $delete = "DELETE FROM PHE_DIAS_NAO_LETIVOS WHERE ID = $id";

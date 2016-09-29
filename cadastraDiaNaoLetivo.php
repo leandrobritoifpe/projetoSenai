@@ -3,7 +3,7 @@
 /* ARQUVOS CadastraDiaNaoLetivo
  * OBJETIVO: SERVIR DE CONTROLE PARA O DAO
  * CRIADA: 25/08/2016
- * ULTIMA ATUALIZACAO : 15/09/2016
+ * ULTIMA ATUALIZACAO : 29/09/2016
  * 
  * DS -> LEANDRO BRITO
  */
@@ -18,7 +18,7 @@ include_once './dao/CalendarioEscolarDao.php';
 //RECEBENDO PARAMENTRO
 
 $data = '2017-09-07';
-
+$ano = substr($data,0,5);
 // CRIANOD ARRAY DE DIAS PARA COMPARA COM A VARIAVEL RECEBIDA
 //$diaSemana = array(0, 1, 2, 3, 4, 5, 6);
 //$diaSemanaNumero = date('w', strtotime($data));
@@ -45,8 +45,8 @@ if ($numeroDaMensagem == 2 && $existeCalendario == 1) {
     $calendarioEscola->set_codFilial(1);
     $daoCalendarioEscola = new CalendarioEscolarDao();
     $daoCalendarioEscola->abrirConexao();
-    $daoCalendarioEscola->atualizaCalendarioComFeriados($calendarioEscola);
-    $gerouComSucesso = $daoCalendarioEscola->geraTodosDiaLetivo(1);
+    $daoCalendarioEscola->atualizaCalendarioComFeriados($calendarioEscola,$ano);
+    $gerouComSucesso = $daoCalendarioEscola->geraTodosDiaLetivo(1,$ano);
     $daoCalendarioEscola->fechaBanco();
     if ($gerouComSucesso) {
          echo "<script>window.location='index.php';alert('DATA CADASTRADA COM SUCESSO, e DIAS LETIVOS ATUALIZADOS');</script>"; 

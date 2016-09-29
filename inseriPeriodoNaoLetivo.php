@@ -3,7 +3,7 @@
 /* ARQUVOS CadastraDiaNaoLetivo
  * OBJETIVO: SERVIR DE CONTROLE PARA O DAO
  * CRIADA: 31/08/2016
- * ULTIMA ATUALIZACAO : 15/09/2016
+ * ULTIMA ATUALIZACAO : 29/09/2016
  * 
  * DS -> LEANDRO BRITO */
 
@@ -19,12 +19,14 @@ $dao = new DiaNaoLetivoDao();
 $dao->abreBanco();
 $dataInicial = '2017-03-01';
 $dataFinal = '2017-03-31';
+
+$ano = substr($dataFinal,0,5);
 $inseriu = $dao->inseriPeridoNaoLetivo($dataInicial, $dataFinal, 3, 1);
 $dao->fechaBanco();
 if ($inseriu) {
     $daoCalendario = new CalendarioEscolarDao();
     $daoCalendario->abrirConexao();
-    $gerouDiaLetivo = $daoCalendario->geraTodosDiaLetivo(1);
+    $gerouDiaLetivo = $daoCalendario->geraTodosDiaLetivo(1,$ano);
     $daoCalendario->fechaBanco();
     if ($gerouDiaLetivo) {
         echo "<script>window.location='index.php';alert('PERIDO LETIVO REGISTRADO COM SUCESSO, E DIAS LETIVOS ATUALIZADOS');</script>";

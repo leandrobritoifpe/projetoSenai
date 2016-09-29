@@ -6,7 +6,7 @@
  * CLASSE CalendarioEscolarDao
  * OBJETIVO: REALIZAR TODA AS COMUNICAÇOES COM O BANCO DE DADOS SQL SERVER
  * CRIADA: 25/08/2016
- * ULTIMA ATUALIZACAO : 23/09/2016
+ * ULTIMA ATUALIZACAO : 29/09/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -53,12 +53,12 @@ class CalendarioEscolarDao {
             echo $exc->getTraceAsString();
         }
     }
-    public function geraTodosDiaLetivo($codFilial){
-        if($this->zeraTodosDiasLetivos($codFilial)){
-            $this->geraDiaLetivoCursoTecnicoSegSex($codFilial);
-            $this->geraDiaLetivoSegASex($codFilial);
-            $this->geraDiaLetivoCursosAosSabadosCt($codFilial);
-            $this->geraDiaLetivoCursosAosSabados($codFilial);
+    public function geraTodosDiaLetivo($codFilial,$ano){
+        if($this->zeraTodosDiasLetivos($codFilial,$ano)){
+            $this->geraDiaLetivoCursoTecnicoSegSex($codFilial,$ano);
+            $this->geraDiaLetivoSegASex($codFilial,$ano);
+            $this->geraDiaLetivoCursosAosSabadosCt($codFilial,$ano);
+            $this->geraDiaLetivoCursosAosSabados($codFilial,$ano);
             return true;
         }
         else{
@@ -66,13 +66,13 @@ class CalendarioEscolarDao {
         }
     }
     //FUNÇÃO QUE CRIA DIAS LETIVOS
-    private function geraDiaLetivoSegASex($codFilial) {
+    private function geraDiaLetivoSegASex($codFilial,$ano) {
         try {
             $contadorDiaLetivo = 0;
             $idCalendarioEscola = "";
             $dataCalendario = "vazio";
             //$this->zeraTodosDiasLetivos($codFilial);
-            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL = 0 AND STATUS = 1 AND CODFILIAL = $codFilial";
+            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL = 0 AND STATUS = 1 AND CODFILIAL = $codFilial AND DATADIA LIKE '$ano%'";
             $result = mssql_query($select);
 
             $arrayCodigoTurno = $this->retornaArrayComTodosOsTurno($codFilial);
@@ -120,7 +120,7 @@ class CalendarioEscolarDao {
           return $array;
     }
     // FUNCAO QUE ATUALIZAR O CALENDARIO COM OS FERIADOS JÁ CADASTRADOS
-    public function atualizaCalendarioComFeriados(CalendarioEscolar $calendarioEscolar) {
+    public function atualizaCalendarioComFeriados(CalendarioEscolar $calendarioEscolar,$ano) {
         $codFilial = $calendarioEscolar->get_codFilial();
         $select = "SELECT * FROM PHE_DIAS_NAO_LETIVOS WHERE STATUS = 1 AND (TIPO = 0 OR TIPO = 1)";
         $resultado = mssql_query($select);
@@ -129,9 +129,10 @@ class CalendarioEscolarDao {
             $sucesso = mssql_query($sql);
             while ($linha = mssql_fetch_array($sucesso)) {
                 $descricao = $linha['DESCRICAO'];
-                $data = substr($linha['DATA'], 5, 9);
+                $data = substr($linha['DATADIA'], 5, 9);
+                $dataCompleta = $ano.$data;
                 $update = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DESCRICAO = $descricao, DESCRICAO_CT = $descricao, DESCRICAO_SS = $descricao,DESCRICAO_CTSS = $descricao, FNL = 1, FNL_CT = 1, "
-                        ."FNL_SS = 1, FNL_CTSS = 1, STATUS = 0, STATUS_CT = 0, STATUS_SS = 0, STATUS_CTSS = 0 WHERE DATADIA LIKE '%$data' AND CODFILIAL = $codFilial";
+                        ."FNL_SS = 1, FNL_CTSS = 1, STATUS = 0, STATUS_CT = 0, STATUS_SS = 0, STATUS_CTSS = 0 WHERE DATADIA = '$dataCompleta' AND CODFILIAL = $codFilial";
                 mssql_query($update);
             }
             return 0;
@@ -152,12 +153,12 @@ class CalendarioEscolarDao {
         }
     }
     //FUNÇÃO QUE CRIA DIAS LETIVOS PARA CURSO TECNICOS
-    private function geraDiaLetivoCursoTecnicoSegSex($codFilial) {
+    private function geraDiaLetivoCursoTecnicoSegSex($codFilial,$ano) {
         try {
             $contadorDiaLetivo = 0;
             $idCalendarioEscola = "";
             $dataCalendario = "vazio";
-            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL_CT = 0 AND STATUS_CT = 1 AND CODFILIAL = $codFilial";
+            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL_CT = 0 AND STATUS_CT = 1 AND CODFILIAL = $codFilial AND DATADIA LIKE '$ano%'";
             $result = mssql_query($select);
 
             //VERIFICANDO SE A FUNÇÃO QUE CRIAR ARRAY COM OS CODIGOS DOS TURNOS DEU CERTO
@@ -198,13 +199,13 @@ class CalendarioEscolarDao {
     }
 
     //FUNCAO QUE GERA OS DIAS LETIVOS DO CUSROS TECNICOS AOS SABADOS
-    private function geraDiaLetivoCursosAosSabados($codFilial) {
+    private function geraDiaLetivoCursosAosSabados($codFilial,$ano) {
         try {
             $contadorDiaLetivo = 0;
             $idCalendarioEscola = "";
             $dataCalendario = "vazio";
 
-            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL_SS = 0 AND STATUS_SS = 1 AND CODFILIAL = $codFilial";
+            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL_SS = 0 AND STATUS_SS = 1 AND CODFILIAL = $codFilial AND DATADIA LIKE '$ano%'";
             $result = mssql_query($select);
 
             //VERIFICANDO SE A FUNÇÃO QUE CRIAR ARRAY COM OS CODIGOS DOS TURNOS DEU CERTO
@@ -241,13 +242,13 @@ class CalendarioEscolarDao {
     }
 
     //FUNCAO QUE GERA OS DIAS LETIVOS DOS CURSO TECNICOS AOS SABADOS
-    private function geraDiaLetivoCursosAosSabadosCt($codFilial) {
+    private function geraDiaLetivoCursosAosSabadosCt($codFilial,$ano) {
         try {
             $contadorDiaLetivo = 0;
             $idCalendarioEscola = "";
             $dataCalendario = "vazio";
 
-            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL_CTSS = 0 AND STATUS_CTSS = 1 AND CODFILIAL = $codFilial";
+            $select = "SELECT * FROM PHE_CALENDARIO_ESCOLA WHERE FNL_CTSS = 0 AND STATUS_CTSS = 1 AND CODFILIAL = $codFilial AND DATADIA LIKE '$ano%'";
             $result = mssql_query($select);
 
             //VERIFICANDO SE A FUNÇÃO QUE CRIAR ARRAY COM OS CODIGOS DOS TURNOS DEU CERTO
@@ -303,8 +304,9 @@ class CalendarioEscolarDao {
     }
 
     //METODO QUE ZERA TODOS OS DIAS LETIVOS JA REGISTRADOS
-    private function zeraTodosDiasLetivos($codFilial) {
-        $instrucao = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO = 0, DLETIVO_CT = 0, HDLETIVO = 0, HDLETIVO_CT = 0, DLETIVO_SS = 0, HDLETIVO_SS = 0, DLETIVO_CTSS = 0, HDLETIVO_CTSS = 0 WHERE CODFILIAL = $codFilial";
+    private function zeraTodosDiasLetivos($codFilial, $ano) {
+        $instrucao = "UPDATE dbo.PHE_CALENDARIO_ESCOLA SET DLETIVO = 0, DLETIVO_CT = 0, HDLETIVO = 0, HDLETIVO_CT = 0, DLETIVO_SS = 0, HDLETIVO_SS = 0, DLETIVO_CTSS = 0, HDLETIVO_CTSS = 0 "
+                . "WHERE CODFILIAL = $codFilial AND DATADIA LIKE '$ano%'";
         $resultado = mssql_query($instrucao);
         if ($resultado) {
             return true;

@@ -3,7 +3,7 @@
 /* ARQUVOS CadastraDiaNaoLetivo
  * OBJETIVO: SERVIR DE CONTROLE PARA O DAO
  * CRIADA: 31/08/2016
- * ULTIMA ATUALIZACAO : 15/09/2016
+ * ULTIMA ATUALIZACAO : 19/09/2016
  * 
  * DS -> LEANDRO BRITO */
 
@@ -18,7 +18,8 @@ include_once './entidades/DiaNaoLetivo.php';
 
 $dao = new DiaNaoLetivoDao();
 $dao->abreBanco();
-
+$data = '2017-09-07';
+$ano = substr($data,0,5);
 //INSTANCIADO OBJETO
 $diaNaoLetivo = new DiaNaoLetivo();
 $diaNaoLetivo->set_codFilial(1);
@@ -32,7 +33,7 @@ $dao->fechaBanco();
 if($inseriu){
     $daoCalendario = new CalendarioEscolarDao();
     $daoCalendario->abrirConexao();
-    $gerouDiaLetivo = $daoCalendario->geraTodosDiaLetivo(1);
+    $gerouDiaLetivo = $daoCalendario->geraTodosDiaLetivo(1,$ano);
     $daoCalendario->fechaBanco();
     if($gerouDiaLetivo){
         $mensagem = exibeMesagensParaUsuario(12);
