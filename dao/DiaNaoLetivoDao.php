@@ -3,7 +3,7 @@
  * CLASSE DiaNaoLetivoDao
  * OJETIVO : RESPOSAVEL POR TODA A COMUNICACAO COM O BANCO DE DADOS
  * CRIADA : 25/08/2016
- * ULTIMA ATUALIZACAO : 29/09/2016
+ * ULTIMA ATUALIZACAO : 30/09/2016
  * 
  * DS -> LEANDRO BRITO ;)
  */
@@ -14,6 +14,7 @@
 include_once './util/ConnectaBanco.php';
 //IMPORTANTO CLASSE DIA NÃO LETIVO
 include_once './entidades/DiaNaoLetivo.php';
+include_once './entidades/CalendarioTurma.php';
 
 class DiaNaoLetivoDao {
 
@@ -28,7 +29,46 @@ class DiaNaoLetivoDao {
             echo 'Exceção capturada: ', $e->getMessage(), "\n";
         }
     }
-
+    public function inseriDiaNaoLetivoTurma(DiaNaoLetivo $diaNaoLetivo, $codigoTurma) {
+        try {
+            $atributos = array ( "1" => $diaNaoLetivo->get_codFilial(),
+                                 "2" => $diaNaoLetivo->get_dataInicial(),
+                                 "3" => $diaNaoLetivo->get_dataFinal());
+            $selec = "SELECT DISTINCT DATA DIA, * FROM PHE_CALENDARIO_TURMA WHERE CODIGO_TURMA = '$codigoTurma' "
+                    . "AND DATADIA BETWEEN '$atributos[2]' AND '$atributos[3]' AND CODFILIAL = $atributos[1] "
+                    . "ORDER BY DATADIA";
+            $result = mssql_query($selec);
+            $listaCalendarioTurma = array();
+            $utimoId = "";
+            if (mssql_num_rows($result)) {
+                while ($linha = mssql_fetch_array($result)) {
+                    $calendario = new CalendarioTurma();
+                    $calendario->set_dataEfetiva($linha['DATADIA']);
+                    $calendario->set_id($linha['ID']);
+                    $listaCalendarioTurma[] = $calendario;
+                    $ultimoId = $linha['ID'];
+                }
+                $listas[0] = $listaCalendarioTurma;
+                $lista[1] = $this->retornaCalendarioTurma($ultimoId, $codigoTurma, $atributos[1]);
+                return $lista;
+            }
+        } catch (Exception $ex) {
+            echo 'Exceção capturada: ', $e->getMessage(), "\n";
+        }
+    }
+    private function  retornaCalendarioTurma($id,$codigoTurma,$codFilial){
+        $select = "SELECT TOP 1 * FROM PHE_CALENDARIO_TURMA WHERE CODFILIAL = $codFilial AND CODTURMA = '$codigoTurma' "
+                        . "AND ID > $id";
+                $resulado = mssql_query($select);
+                $listaCalendario = array();
+                while ($registro = mssql_fetch_array($resulado)) {
+                    $calendarioTurma  = new CalendarioTurma();
+                    $calendarioTurma->set_dataEfetiva($registro['DATADIA']);
+                    $calendarioTurma->set_id($registro['ID']);
+                    $listaCalendario[] = $calendarioTurma;
+                }
+                return $listaCalendario;
+    }
     //FUNCAO QUE INSERI DADOS NO BANCO
     public function inseriDiaNaoLetivo(DiaNaoLetivo $diaNaoLetivo) {
         //ARRAY COM TODOS OS DADOS DO OBJETO DIANAOLETIVO

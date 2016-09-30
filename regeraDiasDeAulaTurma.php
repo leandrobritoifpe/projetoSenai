@@ -17,7 +17,7 @@ $codTurno = 3;
 $dataInicial = '2017-05-09';
 $userCadastrante = 'DARIO';
 $diasRecesso = 5;
-
+        
 $dadosDaTurma = $dao->retornDadosTurma($codFilial, $codTurma);
 
 $calendarioTurma = new CalendarioTurma();

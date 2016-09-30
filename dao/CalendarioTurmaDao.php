@@ -260,6 +260,22 @@ class CalendarioTurmaDao {
            echo 'Exceção capturada: ', $ex->getMessage(), "\n";
         }
     }
+    public function retornaTurmaComDataInicial($codFilial, $data) {
+        try {
+            $sql = "SELECT * FROM PHE_STURMA WHERE CODFILIAL = $codFilial AND DTFINAL > $data";
+            $result = mssql_query($sql);
+            $idsTurmas = array();
+            if (mssql_num_rows($result)) {
+                while ($linha = mssql_fetch_array($$result)) {
+                    $idsTurmas[] = $linha['ID'];
+                }
+            }
+            return $idsTurmas;
+       } catch (Exception $ex) {
+           echo 'Exceção capturada: ', $ex->getMessage(), "\n";
+        }
+    }
+
     public function retornDadosTurma($codFilial,$codTurma){
         $sql = "SELECT * FROM PHE_STURMA WHERE CODFILIAL = $codFilial AND CODIGOTURMA_CC = '$codTurma'";
         $result = mssql_query($sql);
