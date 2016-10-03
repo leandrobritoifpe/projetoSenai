@@ -3,7 +3,7 @@
  * CLASSE CalendarioTurmaDao.php
  * OBJETIVO: SERVIR DE COMUNICAÇÃO COM O BANCO
  * CRIADA: 20/09/2016
- * ULTIMA ATUALIZACAO : 29/09/2016
+ * ULTIMA ATUALIZACAO : 03/09/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -290,7 +290,50 @@ class CalendarioTurmaDao {
             return $dadosTurma;
         }
     }
-
+    public function adiantaDiasDeAula(CalendarioTurma $calendario, $id){
+        try {
+            $calendario->get_id();
+            $ultidaDiaDeAula = "";
+            $diasAdiantados = $this->retornaDiasAulaApartirDoId($calendario->get_codFilial(), $calendario->get_codTurma(), $calendario->get_id());
+            $diasRepassados = $this->retornaDiasAulaApartirDoId($calendario->get_codFilial(), $calendario->get_codTurma(), $id);
+            for ($i = 0; $i < count($diasAdiantados); $i++) {
+                $calendarioTurma = $diasAdiantados[$i];
+                $dados = array("1" => $calendarioTurma->get_dataEfetiva(),
+                               "2" => $calendarioTurma->get_horaInicial(),
+                               "3" => $calendarioTurma->get_horaFinal()
+                               );
+                //ECHO $calendarioTurma->get_dataEfetiva();
+                //ECHO $calendarioTurma->get_horaInicial();
+               $identicador = $diasRepassados[$i]->get_id();
+               $update = "UPDATE PHE_CALENDARIO_TURMA SET DATADIA = '$dados[1]', HORA_INICIAL = '$dados[2]', HORA_FINAL = '$dados[3]' "
+                        . "WHERE ID = $identicador";
+                mssql_query($update);
+                $ultidaDiaDeAula = $dados[1];
+            }
+            //echo "teste";
+            return $ultidaDiaDeAula;
+            
+        } catch (Exception $ex) {
+             echo 'Exceção capturada: ', $ex->getMessage(), "\n";
+        }
+    }
+    private function  retornaDiasAulaApartirDoId($codFilial, $codTurma, $id){
+        $sql = "SELECT * FROM PHE_CALENDARIO_TURMA WHERE CODFILIAL = $codFilial "
+                    . "AND CODIGO_TURMA = '$codTurma' AND ID >= $id AND DATADIA <> ''";
+        $result = mssql_query($sql);
+        $dadosDoCalendarioDaTurma = array();
+        if (mssql_num_rows($result)) {
+            while ($linha = mssql_fetch_array($result)) {
+                $calendario = new CalendarioTurma();
+                $calendario->set_dataEfetiva($linha['DATADIA']);
+                $calendario->set_horaInicial($linha['HORA_INICIAL']);
+                $calendario->set_horaFinal($linha['HORA_FINAL']);
+                $calendario->set_id($linha['ID']);
+                $dadosDoCalendarioDaTurma[] = $calendario;
+            }
+            return $dadosDoCalendarioDaTurma;
+        }
+    }
     public function regeraDiasDeAulaTurma(CalendarioTurma $calendario){
         try {
             $realizouComSucesso = false;
