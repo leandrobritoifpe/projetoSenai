@@ -3,7 +3,7 @@
  * CLASSE CalendarioTurmaDao.php
  * OBJETIVO: SERVIR DE COMUNICAÇÃO COM O BANCO
  * CRIADA: 20/09/2016
- * ULTIMA ATUALIZACAO : 03/09/2016
+ * ULTIMA ATUALIZACAO : 05/10/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -28,7 +28,7 @@ class CalendarioTurmaDao {
        try {
             $listaDisciplinas = $this->retornaObjetoTurma($calendario);
             $dadosCalendarioTurma = array($calendario->get_codFilial(),$calendario->get_codCurso(), 
-                                          $calendario->get_codTurma(), $calendario->get_userCadastrante());
+                                          $calendario->get_codTurma(), $calendario->get_userCadastrante(), $calendario->get_codTurno());
             $contaAula = 1;
             $contaTurma = 1;
             $periodo = "vazio";
@@ -66,10 +66,11 @@ class CalendarioTurmaDao {
                             . "CODIGO_SUBDISCIPLINA,"
                             . "SUBDISC_ORDEM,"
                             . "SUBDISC_CH,"
-                            . "CODCOLIGADA) "
+                            . "CODCOLIGADA,"
+                           . "CODIGO_TURNO) "
                             . "VALUES ($dadosCalendarioTurma[0],1,'$dadosCalendarioTurma[1]','$dadosCalendarioTurma[2]',$dadosDisciplina[4],"
                             . "'$dadosDisciplina[1]','$dadosDisciplina[2]',$dadosDisciplina[5],$dadosDisciplina[3],'$aula','$dadosCalendarioTurma[3]','$subTurma',"
-                            . "'$dadosDisciplina[6]',$dadosDisciplina[7],$dadosDisciplina[8],3)";
+                            . "'$dadosDisciplina[6]',$dadosDisciplina[7],$dadosDisciplina[8],3,$dadosCalendarioTurma[4])";
                     mssql_query($insert);
                     $contaAula++;
                 }
@@ -164,6 +165,7 @@ class CalendarioTurmaDao {
                                 );
             $data = $dadosArray[4];
             $periodosCurso = $this->retornaPeriodos($calendario);
+            
             for ($i = 0; $i < count($periodosCurso); $i++) {
                 $diasDeAulaId = $this->retornaDiasDeAulaDoPeriodo($calendario, $periodosCurso[$i]);
                 $diasCalendario = $this->retornaObjetoCalendarioEscola($calendario,$data);

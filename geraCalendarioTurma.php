@@ -5,7 +5,7 @@
  * 
  * OBJETIVO: REALIZAR TODA AS COMUNICAÇOES COM O BANCO DE DADOS SQL SERVER
  * CRIADA: 15/09/2016
- * ULTIMA ATUALIZACAO : 21/09/2016
+ * ULTIMA ATUALIZACAO : 05/10/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -17,17 +17,18 @@ include_once './dao/CalendarioTurmaDao.php';
 $dao = new CalendarioTurmaDao();
 $dao->abreBanco();
 
-$codCurso = 'TEC.063';
+$codCurso = 'APP.464';
 $codFilial = 1;
-$codTurma = 'T.02';
+$codTurma = 'APP.46401';
 $userCadastrante = 'DARIO';
+$turno = 1;
 
 $calendarioTurma = new CalendarioTurma();
 $calendarioTurma->set_codCurso($codCurso);
 $calendarioTurma->set_codFilial($codFilial);
 $calendarioTurma->set_codTurma($codTurma);
 $calendarioTurma->set_userCadastrante($userCadastrante);
-
+$calendarioTurma->set_codTurno($turno);
 $gerouClendario = $dao->geraCalendarioTurma($calendarioTurma);
 $dao->fechaBanco();
 
@@ -37,5 +38,5 @@ if($gerouClendario){
 }
 else{
   echo "<script>window.location='index.php';alert('OCORREU UM ERRO AO TENTAR GERAR O CALENDARIO');</script>"; 
-    
+    //ECHO "ERRO";
 }

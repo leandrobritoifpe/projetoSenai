@@ -3,7 +3,7 @@
 /* ARQUVOS CadastraDiaNaoLetivo
  * OBJETIVO: SERVIR DE CONTROLE PARA O DAO
  * CRIADA: 14/08/2016
- * ULTIMA ATUALIZACAO : 15/09/2016
+ * ULTIMA ATUALIZACAO : 05/10/2016
  * 
  * DS -> LEANDRO BRITO
  */
@@ -28,8 +28,10 @@ if ($dao->anoNaoExiisteNoCalendarioEscolar('2017', 1)) {
     $dao->fechaBanco();
     if ($gerouComSucesso) {
         echo "<script>window.location='index.php';alert('CALARIO DO DOCENTE GERADO COM SUCESSO');</script>";
+        
     } else {
         echo "<script>window.location='index.php';alert('NAO FOI POSSIVEL GERAR O CALENDARIO DO DOCENTE');</script>";
+       
     }
 }
 

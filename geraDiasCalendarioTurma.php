@@ -3,7 +3,7 @@
  * CLASSE CalendarioEscolarDao
  * OBJETIVO: SERVIR DE CONTROLE
  * CRIADA: 21/09/2016
- * ULTIMA ATUALIZACAO : 21/09/2016
+ * ULTIMA ATUALIZACAO : 05/10/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -14,13 +14,13 @@ include_once './dao/CalendarioTurmaDao.php';
 $dao = new CalendarioTurmaDao();
 $dao->abreBanco();
 
-$codCurso = 'TEC.063';
+$codCurso = 'APP.464';
 $codFilial = 1;
-$codTurma = 'TEC.063.PLAN.2';
+$codTurma = 'APP.46401';
 $codTurno = 1;
-$dataInicial = '2017-01-03';
+$dataInicial = '2016-03-05';
 $userCadastrante = 'DARIO';
-$diasRecesso = 2;
+$diasRecesso = 0;
 
 $calendarioTurma = new CalendarioTurma();
 $calendarioTurma->set_codCurso($codCurso);
@@ -35,7 +35,7 @@ $geroucomSucesso = $dao->geraDiasCalendarioTurma($calendarioTurma);
 //$sucesso = $dao->geraProximoDia($calendarioTurma);
 $dao->fechaBanco();
 
-if($geroucomSucesso && $sucesso){
+if($geroucomSucesso){
  // echo "<script>window.location='index.php';alert('CALENDARIO DA TURMA ATUALIZADO COM SUCESSO');</script>";
     echo "atualizou os dados com sucessso";
 }

@@ -2,7 +2,7 @@
 /* ARQUVOS CadastraDiaNaoLetivo
  * OBJETIVO: SERVIR DE CONTROLE PARA O DAO
  * CRIADA: 27/08/2016
- * ULTIMA ATUALIZACAO : 16/09/2016
+ * ULTIMA ATUALIZACAO : 05/10/2016
  * 
  * DS -> LEANDRO BRITO
  */
@@ -23,7 +23,22 @@ class CalendarioProfessor {
     private $ano;
     private $flagFeriado;
     private $userCadastrante;
+    private $turma;
+    private $idTurma;
     
+    public function set_turma($turma){
+        $this->turma = $turma;
+    }
+    public function get_turma(){
+        return $this->turma;
+    }
+    public function set_idTurma($idTurma){
+        $this->idTurma = $idTurma;
+    }
+    public function get_idTurma(){
+        return $this->idTurma;
+    }
+
     public function set_userCadastrante($userCadastrante){
         $this->userCadastrante = $userCadastrante;
     }
