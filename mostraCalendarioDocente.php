@@ -4,7 +4,7 @@
  * CLASSE CalendarioEscolarDao
  * OBJETIVO: REALIZAR TODA AS COMUNICAÇOES COM O BANCO DE DADOS SQL SERVER
  * CRIADA: 14/09/2016
- * ULTIMA ATUALIZACAO : 16/09/2016
+ * ULTIMA ATUALIZACAO : 07/10/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -13,23 +13,21 @@
     include './gerenciadorDeFuncoes.php';
     $con = conectandoComBanco();
     $codFilial = 1;
-    $codDocente = 83;
-   $sql = "SELECT TOP 1 DATADIA
+    $codDocente = 84;
+    $ano = 2016;
+    $turno = 3;
+    $cor = 'blue';
+    $sql = "SELECT TOP 1 DATADIA
             FROM PHE_CALENDARIO_DOCENTE
-            WHERE CODFILIAL = $codFilial
+            WHERE CODFILIAL = $codFilial 
+            AND DATADIA LIKE '$ano%'
             AND CODIGODOCENTE = $codDocente 
             ORDER BY DATADIA DESC";
     $result = mssql_query($sql);
-    $ano = "";
+    
     $cont =0;
-    if (mssql_num_rows($result)) {
-        while ($linha = mssql_fetch_array($result)) {
-            $ano = substr($linha['DATADIA'],0,-6);
-            $cont ++;
-        }
-        if ($cont == 0) {
-             echo "<script>window.location='index.php';alert('NAO HA NENHUM CALENDARIO CADASTRADO');</script>";
-        }
+    if (!mssql_num_rows($result)) {
+        echo "<script>window.location='index.php';alert('NAO HA NENHUM CALENDARIO CADASTRADO');</script>";
     }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -50,6 +48,15 @@
             <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
             <script type="text/javascript" src="js_file/jquery-2.1.4.js"></script>
             <script src="bootstrap/js/bootstrap.min.js"></script>
+            <!-- DataTables CSS -->
+            <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.8/css/jquery.dataTables.css" />
+  
+            <!-- jQuery -->
+            <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+
+            <!-- DataTables -->
+            <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.8/js/jquery.dataTables.js"></script>
+            <script type="text/javascript" src="js_file/teste.js"></script>
     </head>
     <body>
         <div class="main clearfix">
@@ -62,18 +69,18 @@
                                 <thead>
                                     <tr>
                                         <th style="background-color:red; color: red;">VERMELHO</th>
-                                        <th>DIAS SEM AULAS</th>
+                                        <th>AULAS DO PROFESSOR</th>
                                     </tr>
                                     <tr>
                                         <th style="background-color: blue; color:blue;">AZUL</th>
-                                        <th>DIAS NORMAIS</th>
+                                        <th>DIAS SEM AULA DO PROFESSOR</th>
                                     </tr>
                                 </thead>
                             </table>
                         </div>
                     </div>
                </div>
-                <div class="row">
+               <div class="row">
                     <?php
                         for ($index = 1; $index < 5; $index++) {
                      ?>
@@ -86,7 +93,7 @@
                             </div>
                             <?php
                                $janiero = new CalendarioDocente();
-                               $janiero->geraCalendario($index, $ano,$codFilial,$codDocente);
+                               $janiero->geraCalendario($index, $ano,$codFilial,$codDocente,$turno,$cor);
                             ?>
                         </div>
                     </div>
@@ -109,7 +116,7 @@
                             </div>
                             <?php
                                $janiero = new CalendarioDocente();
-                               $janiero->geraCalendario($index, $ano,$codFilial,$codDocente);
+                               $janiero->geraCalendario($index, $ano,$codFilial,$codDocente,$turno,$cor);
                             ?>
                         </div>
                     </div>
@@ -132,7 +139,7 @@
                             </div>
                             <?php
                                $janiero = new CalendarioDocente();
-                               $janiero->geraCalendario($index, $ano,$codFilial,$codDocente);
+                               $janiero->geraCalendario($index, $ano,$codFilial,$codDocente,$turno,$cor);
                             ?>
                         </div>
                     </div>
@@ -140,47 +147,60 @@
                         }
                     ?>
                 </div>
-                <div class="row">
-                    <div class="col-md-3 col-sm-4 col-xs-6">
-			<div>DATAS DE FERIADOS ESCOLARES</div>
+           </div>
+        </div>
+        <br /><br /> <br />
+        <div class="container">
+			<div>TURMA E DISCIPLINA DO PROFESSOR</div>
                         <div>
                             <?php
-                                $selectFeriados = "select d.DATA,e.DESCRICAO "
-                                        . "from PHE_DIAS_NAO_LETIVOS d "
-                                        . "left join PHE_DESCRICAO_CALENDARIO_ESCOLA e "
-                                        . "on d.DESCRICAO = e.ID "
-                                        . "where d.DESCRICAO = e.ID";
-                                $resultado = mssql_query($selectFeriados);
+                                $select = "SELECT T.CODIGO_TURMA AS TURMA, C.NOME,T.DESCRICAO_DISCIPLINA, P.NOME AS PROFESSOR,MIN(T.DATADIA) AS DATA_INICIO, 
+                                           MAX(T.DATADIA) AS DATA_TERMINO, T.SUBDISC_ORDEM, T.ORDEM_DISCIPLINA, T.SUBDISC_ORDEM
+                                           FROM PHE_CALENDARIO_TURMA T 
+                                           inner join PHE_SPROFESSOR P ON T.CODIGO_PROFESSOR = P.CODPESSOA 
+                                           INNER JOIN PHE_SCURSO C ON T.CODIGO_CURSO = C.CODCURSO
+                                           WHERE T.CODIGO_TURNO = $turno
+                                           GROUP BY T.CODIGO_SUBDISCIPLINA, T.CODIGO_CURSO, T.CODIGO_PROFESSOR, P.NOME, T.DESCRICAO_DISCIPLINA, T.CODIGO_TURMA, 
+                                           C.NOME,  T.SUBDISC_ORDEM, T.ORDEM_DISCIPLINA, T.SUBDISC_ORDEM
+                                           ORDER BY T.ORDEM_DISCIPLINA, T.SUBDISC_ORDEM";
+                                
+                                $resultado = mssql_query($select);
                                 $contador = 0;
                            ?>
-                             <table class="table">
+                            <table class="table" id="tabela" border="1">
                                 <thead>
-                                    <tr>
-                                        <th>DATA</th>
-                                        <th>DESCRICAO</th>
+                                    <tr style="background-color: #58ACFA">
+                                        <th>TURMA</th>
+                                        <th>CURSO</th>
+                                        <th style="width: 20%;">DISCIPLINA</th>
+                                        <th style="width: 20%;">PROFESSOR</th>
+                                        <th style="width: 5%;">DATA INICIO</th>
+                                        <th style="width: 5%;">DATA TERMINIO</th>
                                     </tr>
                                 </thead>
                             <?php
                                 
                                     while ($linha = mssql_fetch_array($resultado)) {
-                                        $dataFormatoBR = date('d/m/Y', strtotime($linha['DATA']));
-                                        $diaMes = substr($dataFormatoBR,0,5);
+                                        $dataInicioFormatoBR = date('d/m/Y', strtotime($linha['DATA_INICIO']));
+                                        $dataTerminoFormatoBR = date('d/m/Y', strtotime($linha['DATA_TERMINO']));
+                                        //$diaMes = substr($dataFormatoBR,0,5);
                             ?>
                                 <tr>
-                                    <td><?php echo $diaMes;?></td>
-                                    <td><?php echo $linha['DESCRICAO'];?></td>
+                                    <td><?php echo $linha['TURMA'];?></td>
+                                    <td><?php echo utf8_encode($linha['NOME']);?></td>
+                                    <td><?php echo utf8_encode($linha['DESCRICAO_DISCIPLINA']);?></td>
+                                    <td><?php echo utf8_encode($linha['PROFESSOR']);?></td>
+                                    <td><?php echo $dataInicioFormatoBR;?></td>
+                                    <td><?php echo $dataTerminoFormatoBR;?></td>
                                 </tr>
                             
                             <?php
                                     }
                                 
                             ?>
-                                 </table>
+                            </table>
                         </div>
                     </div> 
-                </div>
-           </div>
-        </div>
         <?php
              mssql_close($con);
         ?>

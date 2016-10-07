@@ -5,7 +5,7 @@
  * CLASSE CalendarioEscolarDao
  * OBJETIVO: REALIZAR TODA AS COMUNICAÇOES COM O BANCO DE DADOS SQL SERVER
  * CRIADA: 14/09/2016
- * ULTIMA ATUALIZACAO :16/09/2016
+ * ULTIMA ATUALIZACAO :07/10/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -20,8 +20,11 @@ class CalendarioDocente {
     public $dsprimdia;
     public $linhafechada;
     public $codDocente;
-    
-    public function geraCalendario($pmes, $pano, $codFilial,$codDocente) {
+    public $turno;
+    public $cor;
+    public function geraCalendario($pmes, $pano, $codFilial,$codDocente,$turno,$cor) {
+        $this->cor = $cor;
+        $this->turno = $turno;
         $this->codDocente = $codDocente;
         $this->codFilial = $codFilial;
         $this->linhafechada = true;
@@ -33,7 +36,7 @@ class CalendarioDocente {
         $this->primeiro_dia_mes();
         $this->exibe_calendario();
     }
-    public function verificaData($codFilial, $mes, $dia,$codDocente,$ano){
+    public function verificaData($codFilial, $mes, $dia,$codDocente,$ano,$turno){
         $tamandoDaString = strlen($dia);
         $tamandoDaStringMes = strlen($mes);
         $select = "";
@@ -41,7 +44,8 @@ class CalendarioDocente {
         include_once './util/includeBanco.php';
         
         if ($tamandoDaString != 2 && $tamandoDaStringMes != 2) {
-             $select = "SELECT * FROM PHE_CALENDARIO_DOCENTE WHERE FNL = 1 AND DATADIA LIKE '$ano-0$mes-0$dia' AND CODFILIAL = $codFilial AND CODIGODOCENTE = $codDocente";
+            
+             $select = "SELECT * FROM PHE_CALENDARIO_TURMA WHERE CODIGO_PROFESSOR = $codDocente AND DATADIA LIKE '$ano-0$mes-0$dia' AND CODFILIAL = $codFilial AND CODIGO_TURNO = $turno";
              $resultado = mssql_query($select);
              while ($linha = mssql_fetch_array($resultado)) {
                  $cont ++;
@@ -54,7 +58,7 @@ class CalendarioDocente {
              }
         }
         elseif($tamandoDaString == 2 && $tamandoDaStringMes != 2){
-             $select = "SELECT DATADIA FROM PHE_CALENDARIO_DOCENTE WHERE FNL = 1 AND DATADIA LIKE '$ano-0$mes-$dia' AND CODFILIAL = $codFilial AND CODIGODOCENTE = $codDocente";
+             $select = "SELECT DATADIA FROM PHE_CALENDARIO_TURMA WHERE DATADIA LIKE '$ano-0$mes-$dia' AND CODFILIAL = $codFilial AND CODIGO_PROFESSOR = $codDocente AND CODIGO_TURNO = $turno";
              $resultado = mssql_query($select);
              while ($linha = mssql_fetch_array($resultado)) {
                  $cont ++;
@@ -67,7 +71,8 @@ class CalendarioDocente {
              }
         }
         elseif($tamandoDaString == 2 && $tamandoDaStringMes == 2){
-             $select = "SELECT DATADIA FROM PHE_CALENDARIO_DOCENTE WHERE FNL = 1 AND DATADIA LIKE '$ano-$mes-$dia' AND CODFILIAL = $codFilial AND CODIGODOCENTE = $codDocente";
+             $select = "SELECT DATADIA FROM PHE_CALENDARIO_TURMA WHERE DATADIA LIKE '$ano-$mes-$dia' AND CODFILIAL = $codFilial AND CODIGO_PROFESSOR = $codDocente "
+                     . "AND CODIGO_TURNO = $turno";
              $resultado = mssql_query($select);
              while ($linha = mssql_fetch_array($resultado)) {
                  $cont ++;
@@ -79,6 +84,21 @@ class CalendarioDocente {
                  return 0;
              }
         }
+        elseif($tamandoDaString == 1 && $tamandoDaStringMes == 2){
+             $select = "SELECT DATADIA FROM PHE_CALENDARIO_TURMA WHERE DATADIA LIKE '$ano-$mes-0$dia' AND CODFILIAL = $codFilial AND CODIGO_PROFESSOR = $codDocente "
+                     . "AND CODIGO_TURNO = $turno";
+             $resultado = mssql_query($select);
+             while ($linha = mssql_fetch_array($resultado)) {
+                 $cont ++;
+             }
+             if ($cont != 0 && $cont != 1) {
+                 return 1;
+             }
+             else{
+                 return 0;
+             }
+        }
+        
        
     }
     public function calcula_tstamp() {
@@ -121,14 +141,15 @@ class CalendarioDocente {
             if ( $casa < $this->dsprimdia ) {
                echo "<td> </td>\n";
             } else {
-               $recebeFuncao = $this->verificaData($this->codFilial, $this->mes, $this->dia,  $this->codDocente,$this->ano);
+               $recebeFuncao = $this->verificaData($this->codFilial, $this->mes, $this->dia,  $this->codDocente,$this->ano,$this->turno);
                if($recebeFuncao == 1){
-                   echo "<td align='center' style='color:red;'>\n";
+                   $color = $this->cor;
+                   echo "<td align='center' style='background-color:$color;'>\n";
                echo $this->dia."";
                echo "</td>\n";
                $this->proximo_dia();
                }else{
-                   echo "<td align='center' style = 'color:blue;'>\n";
+                   echo "<td align='center' style = 'color:black;'>\n";
                    echo $this->dia."\n";
                echo "</td>\n";
                $this->proximo_dia();

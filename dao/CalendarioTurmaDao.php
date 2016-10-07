@@ -3,7 +3,7 @@
  * CLASSE CalendarioTurmaDao.php
  * OBJETIVO: SERVIR DE COMUNICAÇÃO COM O BANCO
  * CRIADA: 20/09/2016
- * ULTIMA ATUALIZACAO : 05/10/2016
+ * ULTIMA ATUALIZACAO : 07/10/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -67,10 +67,11 @@ class CalendarioTurmaDao {
                             . "SUBDISC_ORDEM,"
                             . "SUBDISC_CH,"
                             . "CODCOLIGADA,"
-                           . "CODIGO_TURNO) "
+                           . "CODIGO_TURNO,"
+                           . "CODIGO_PROFESSOR) "
                             . "VALUES ($dadosCalendarioTurma[0],1,'$dadosCalendarioTurma[1]','$dadosCalendarioTurma[2]',$dadosDisciplina[4],"
                             . "'$dadosDisciplina[1]','$dadosDisciplina[2]',$dadosDisciplina[5],$dadosDisciplina[3],'$aula','$dadosCalendarioTurma[3]','$subTurma',"
-                            . "'$dadosDisciplina[6]',$dadosDisciplina[7],$dadosDisciplina[8],3,$dadosCalendarioTurma[4])";
+                            . "'$dadosDisciplina[6]',$dadosDisciplina[7],$dadosDisciplina[8],3,$dadosCalendarioTurma[4],0)";
                     mssql_query($insert);
                     $contaAula++;
                 }
@@ -140,7 +141,7 @@ class CalendarioTurmaDao {
                        . "SUBDISC_CODDISC,"
                        . "SUBDISC_ORDEM,"
                        . "CODCOLIGADA) VALUES ($arrayDados[1],'$arrayDados[2]','$arrayDados[3]','$arrayDados[4]',$arrayDados[5],'$arrayDados[6]',$arrayDados[7],"
-                       . "'$arrayDados[8]','$arrayDados[10]','$arrayDados[11]','$arrayDados[12]','$arrayDados[13]','$arrayDados[14]',$arrayDados[15],"
+                       . "'$arrayDados[12]','$arrayDados[10]','$arrayDados[11]','$arrayDados[12]','$arrayDados[13]','$arrayDados[14]',$arrayDados[15],"
                        . "'$arrayDados[16]',$arrayDados[17],$arrayDados[21],'$arrayDados[22]',$arrayDados[23],'$subDescricao','$subCod',$cont,3)";
                $cont++;
                $sucesso = mssql_query($insert);
@@ -302,13 +303,14 @@ class CalendarioTurmaDao {
                 $calendarioTurma = $diasAdiantados[$i];
                 $dados = array("1" => $calendarioTurma->get_dataEfetiva(),
                                "2" => $calendarioTurma->get_horaInicial(),
-                               "3" => $calendarioTurma->get_horaFinal()
+                               "3" => $calendarioTurma->get_horaFinal(),
+                               "4" => $calendarioTurma->get_diaSemana()
                                );
                 //ECHO $calendarioTurma->get_dataEfetiva();
                 //ECHO $calendarioTurma->get_horaInicial();
                $identicador = $diasRepassados[$i]->get_id();
-               $update = "UPDATE PHE_CALENDARIO_TURMA SET DATADIA = '$dados[1]', HORA_INICIAL = '$dados[2]', HORA_FINAL = '$dados[3]' "
-                        . "WHERE ID = $identicador";
+               $update = "UPDATE PHE_CALENDARIO_TURMA SET DATADIA = '$dados[1]', HORA_INICIAL = '$dados[2]', HORA_FINAL = '$dados[3]', "
+                        . "DIASEMANA = '$dados[4]' WHERE ID = $identicador";
                 mssql_query($update);
                 $ultidaDiaDeAula = $dados[1];
             }
@@ -330,6 +332,7 @@ class CalendarioTurmaDao {
                 $calendario->set_dataEfetiva($linha['DATADIA']);
                 $calendario->set_horaInicial($linha['HORA_INICIAL']);
                 $calendario->set_horaFinal($linha['HORA_FINAL']);
+                $calendario->set_diaSemana($linha['DIASEMANA']);
                 $calendario->set_id($linha['ID']);
                 $dadosDoCalendarioDaTurma[] = $calendario;
             }
@@ -680,7 +683,7 @@ private function retornaIdDaAulaPorData(CalendarioTurma $calendario){
             while ($linha = mssql_fetch_array($query)) {
                 $disciplina = new CursoDisciplina();
                 $disciplina->set_codDisciplina($linha['CODDISC_SDISCGRADE']);
-                $disciplina->set_descricaoDisciplina($linha['DESCRICAO_SDISCGRADE']);
+                $disciplina->set_descricaoDisciplina($linha['NOME_SDISCIPLINA']);
                 $disciplina->set_horaDisciplina($linha['CH_SDISCIPLINA_SDISCIPLINA']);
                 $disciplina->set_periodo($linha['CODPERIODO_SDISCGRADE']);
                 $disciplina->set_ordemDeEnsino($linha['POSHIST_SDISCGRADE']);

@@ -3,7 +3,7 @@
 /* ARQUVOS CadastraDiaNaoLetivo
  * OBJETIVO: SERVIR DE CONTROLE PARA O DAO
  * CRIADA: 14/08/2016
- * ULTIMA ATUALIZACAO : 05/10/2016
+ * ULTIMA ATUALIZACAO : 06/10/2016
  * 
  * DS -> LEANDRO BRITO
  */
@@ -95,19 +95,63 @@ class CalendarioDocenteDao {
             return $dados;
         }
     }
-    public function verificaSeDataExiste($array, $codFilial, $docente) {
-        $ultimoIndice = (count($array) - 1);
-        $calendario = $array[0];
-        $newCalendario = $array[$ultimoIndice];
-        $dados = array($calendario->get_dataDia(), $newCalendario->get_dataDia());
-        $sql = "SELECT * FROM PHE_CALENDARIO_DOCENTE WHERE DATADIA BETWEEN '$dados[0]' AND '$dados[1]' "
-                . "AND CODFILIAL = $codFilial AND FNL = 0 AND CODIGODOCENTE = $docente AND CODIGO_TURMA = '' "
-                . "AND CODTURNO = 0";
-        $result = mssql_query($sql);
-        if (mssql_num_rows($result)) {
-            return true;
+    public function verificaSeDataExiste($diasDeAulaSubDisc, $codFilial, $docente, $turno) {
+        $diasUteis = array();
+        $diaComAula = array();
+       
+        for ($i = 0; $i < count($diasDeAulaSubDisc); $i++) {
+            $calendario = $diasDeAulaSubDisc[$i];
+            $dados = array($calendario->get_dataDia());
+            $select = "SELECT * FROM PHE_CALENDARIO_TURMA WHERE DATADIA = '$dados[0]' "
+                    . "AND CODFILIAL = $codFilial AND CODIGO_PROFESSOR = $docente "
+                    . "AND CODIGO_TURNO = $turno";
+            $resultado = mssql_query($select);
+            if (!mssql_num_rows($resultado)) {
+                $diasUteis[] = $diasDeAulaSubDisc[$i];
+            }
+            else{
+                $diaComAula[] = $diasDeAulaSubDisc[$i];
+            }     
         }
-        return false;
+       
+        return  $todosDias = array($diasUteis,$diaComAula);
+//        $ultimoIndice = (count($diasDeAulaSubDisc) - 1);
+//        $calendario = $diasDeAulaSubDisc[0];
+//        $newCalendario = $diasDeAulaSubDisc[$ultimoIndice];
+//        $dados = array($calendario->get_dataDia(), $newCalendario->get_dataDia());
+//        if (mssql_num_rows($resultado)) {
+//            return false;
+//        }
+//        $sql = "SELECT * FROM PHE_CALENDARIO_DOCENTE WHERE DATADIA BETWEEN '$dados[0]' AND '$dados[1]' "
+//                . "AND CODFILIAL = $codFilial AND FNL = 0 AND CODIGODOCENTE = $docente "
+//                . "AND CODTURNO = 0";
+//        $result = mssql_query($sql);
+//        if (mssql_num_rows($result)) {
+//            return $this->retornaDiasDeAulaUteis($sql);
+//        }
+//        return false;
+    }
+    public function professorTemHora($docente, $codFilial, $diasDeAula) {
+        try {
+            $diasUteis = array();
+            $diasEsgotados = array();
+            for ($i = 0; $i < count($diasDeAula); $i++) {
+                $dataDia = $diasDeAula[$i]->get_dataDia();
+                $sql = "SELECT * FROM PHE_CALENDARIO_TURMA WHERE CODIGO_PROFESSOR = $docente "
+                        . "AND CODFILIAL = $codFilial AND DATADIA = '$dataDia'";
+                $result = mssql_query($sql);
+                $linhas = mssql_num_rows($result);
+                if ($linhas >= 8) {
+                    $diasEsgotados[] = $diasDeAula[$i];
+                }
+                else{
+                   $diasUteis[] = $diasDeAula[$i];
+                }
+            }
+            return $todosDias = array($diasUteis,$diasEsgotados);
+        } catch (Exception $ex) {
+            echo 'Exceção capturada: ', $ex->getMessage(), "\n";
+        }
     }
 
     public function inseriProfessorTurma($codFilial, $codTurma, $diasDeAula, $docente, $turno) {
@@ -122,20 +166,24 @@ class CalendarioDocenteDao {
                     "4" => $calendario->get_turma(),
                     "5" => $calendario->get_idTurma()
                 );
-                $id = $this->idDiaDeAula($calendario->get_dataDia(), $codFilial, $docente,$id);
-                $update = "UPDATE PHE_CALENDARIO_DOCENTE SET HORINI = '$dados[2]', HORFIM = '$dados[3]', "
-                        . "CODIGO_TURMA = '$codTurma', CODTURNO = $turno, IDTURMA = $dados[5] "
-                        . "WHERE ID = $id";
-                $result = mssql_query($update);
-                if ($result) {
+                //$id = $this->idDiaDeAula($calendario->get_dataDia(), $codFilial, $docente,$id);
+                /* $update = "UPDATE PHE_CALENDARIO_DOCENTE SET HORINI = '$dados[2]', HORFIM = '$dados[3]', "
+                  . "CODIGO_TURMA = '$codTurma', CODTURNO = $turno, IDTURMA = $dados[5] "
+                  . "WHERE ID = $id"; */
+                $updateCalendarioTurma = "UPDATE PHE_CALENDARIO_TURMA SET CODIGO_PROFESSOR = $docente "
+                        . "WHERE ID = $dados[5]";
+//               /$result = mssql_query($update);
+                $resultado = mssql_query($updateCalendarioTurma);
+                if ($resultado) {
                     $gerouComSucesso = true;
                 }
             }
             return $gerouComSucesso;
         } catch (Exception $ex) {
-            echo 'Exceção capturada: ', $e->getMessage(), "\n";
+            echo 'Exceção capturada: ', $ex->getMessage(), "\n";
         }
     }
+
     public function retiraProfessorTurma($codFilial,$docente,$turma,$subdisc){
         try {
             $atualizouComSucesso = false;
@@ -144,26 +192,27 @@ class CalendarioDocenteDao {
                 $update = "UPDATE PHE_CALENDARIO_DOCENTE SET HORINI = '', HORFIM = '', "
                         . "IDTURMA = 0, CODIGO_TURMA = '', CODTURNO = 0 WHERE CODFILIAL = $codFilial "
                         . "AND CODIGODOCENTE = $docente AND IDTURMA = $ids[$i]";
-                
-                $updateTurma = "UPDATE PHE_CALENDARIO_TURMA SET = CODIGO_PROFESSOR = 0 "
-                        . "WHERE CODFILIAL = $codFilial AND CODIGO_PROFESSOR = $docente "
-                        . "AND CODIGO_SUBDISCIPLINA = '$subdisc'";
                 $result = mssql_query($update);
-                $result = mssql_query($updateTurma);
-                if ($update && $updateTurma) {
+                
+                if ($update) {
                     $atualizouComSucesso = true;
                 }
             }
+            $updateTurma = "UPDATE PHE_CALENDARIO_TURMA SET CODIGO_PROFESSOR = 0 "
+                        . "WHERE CODFILIAL = $codFilial AND CODIGO_PROFESSOR = $docente "
+                        . "AND CODIGO_SUBDISCIPLINA = '$subdisc' AND CODIGO_TURMA = '$turma'";
+            $result = mssql_query($updateTurma);
             return $atualizouComSucesso;
         } catch (Exception $ex) {
-            echo 'Exceção capturada: ', $e->getMessage(), "\n";
+            echo 'Exceção capturada: ', $ex->getMessage(), "\n";
         }
     }
+
     private function idAulaSubDisciplinaProfessor($codFilial,$docente,$turma,$subdisc){
         try {
             $sql = "SELECT * FROM PHE_CALENDARIO_TURMA WHERE CODFILIAL = $codFilial "
-                    . "AND CODIGODOCENTE = $docente AND CODIGO_TURMA = '$turma' "
-                    . "AND CODIGO_SUBDISCIPLINA = $subdisc";
+                    . "AND CODIGO_PROFESSOR = $docente AND CODIGO_TURMA = '$turma' "
+                    . "AND CODIGO_SUBDISCIPLINA = '$subdisc'";
             $result = mssql_query($sql);
             $idTurma = array();
             if (mssql_num_rows($result)) {
@@ -176,11 +225,11 @@ class CalendarioDocenteDao {
             echo 'Exceção capturada: ', $e->getMessage(), "\n";
         }
     }
-    
+    /*
     private function idDiaDeAula($data,$codFilial,$docente,$id){
        $sql = "SELECT TOP 1 * FROM PHE_CALENDARIO_DOCENTE WHERE DATADIA >= '$data' "
                 . "AND CODFILIAL = $codFilial AND CODIGODOCENTE = $docente AND FNL = 0 "
-                . "AND ID > $id AND CODIGO_TURMA = '' AND CODTURNO = 0";
+                . "AND ID > $id AND CODTURNO = 0";
         $result = mssql_query($sql);
         //$id = '';
         if (mssql_num_rows($result)) {
@@ -188,6 +237,22 @@ class CalendarioDocenteDao {
                return $linha['ID'];
             }
             
+        }
+    }*/
+    private function retornaDiasDeAulaUteis($sql){
+        $result = mssql_query($sql);
+        $dados =  array();
+        if (mssql_num_rows($result)) {
+            while ($linha = mssql_fetch_array($result)) {
+                $calendario  = new CalendarioProfessor();
+                $calendario->set_horaIni($linha['HORA_INICIAL']);
+                $calendario->set_horaFini($linha['HORA_FINAL']);
+                $calendario->set_turma($linha['CODIGO_TURMA']);
+                $calendario->set_idTurma($linha['ID']);
+                $calendario->set_dataDia($linha['DATADIA']);
+                $dados[] = $calendario;
+            }
+            return $dados;
         }
     }
     private function retornaArrayDeObjetos(CalendarioProfessor $calendario) {

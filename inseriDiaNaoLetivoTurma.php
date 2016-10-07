@@ -1,7 +1,7 @@
 <?php
 /*
     CRIADA: 20/09/2016
- *  ULTIMA ATUALIZACAO : 03/09/2016
+ *  ULTIMA ATUALIZACAO : 07/09/2016
  * 
  * DS-> LEANDRO BRITO
  * 
@@ -14,10 +14,10 @@ include_once './entidades/DiaNaoLetivo.php';
 include_once './entidades/CalendarioTurma.php';
 include_once './dao/CalendarioTurmaDao.php';
 
-$codigoTurma = 'TEC.063.PLAN.00';
+$codigoTurma = 'APP.464.PLAN.1.01';
 $codFilial = 1;
-$dataInicial = '2017-02-01';
-$dataFinal = '2017-02-02';
+$dataInicial = '2016-10-04';
+$dataFinal = '2016-10-06';
 $userCadastrante = "DARIO";
 
 $diaoNaoLeitvo = new DiaNaoLetivo();
@@ -57,14 +57,17 @@ if ($ultimoDiaDeAula != '') {
     $regerouDiasDeAula = $dao->regeraDiasDeAulaTurma($calendarioTurma);
     $dao->fechaBanco();
     if ($regerouDiasDeAula) {
-        echo "<script>window.location='index.php';alert('CALENDARIO DA TURMA ATUALIZADO COM SUCESSO');</script>";
+        //echo "<script>window.location='index.php';alert('CALENDARIO DA TURMA ATUALIZADO COM SUCESSO');</script>";
+        echo "deu certo";
     }
     else{
-       echo "<script>window.location='index.php';alert('OCORREU UM ERRO AO TENTAR ATUALIZAR O CALENDARIO DA TURMA');</script>";
+      // echo "<script>window.location='index.php';alert('OCORREU UM ERRO AO TENTAR ATUALIZAR O CALENDARIO DA TURMA');</script>";
+        echo "deu errado";
     }
 }
 else{
-    echo "<script>window.location='index.php';alert('ERRO AO TENTAR ATUALIZAR O CALENDARIO DA TURMA, VERIFIQUE SE EXISTE UM CALENDARIO ESOCLAR COM A DATA PASSADA');</script>";
+   // echo "<script>window.location='index.php';alert('ERRO AO TENTAR ATUALIZAR O CALENDARIO DA TURMA, VERIFIQUE SE EXISTE UM CALENDARIO ESOCLAR COM A DATA PASSADA');</script>";
+    echo "nao existe";
 }
 
 
