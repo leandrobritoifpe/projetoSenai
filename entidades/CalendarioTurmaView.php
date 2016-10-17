@@ -5,12 +5,12 @@
  * CLASSE CalendarioEscolarDao
  * OBJETIVO: REALIZAR TODA AS COMUNICAÇOES COM O BANCO DE DADOS SQL SERVER
  * CRIADA: 07/10/2016
- * ULTIMA ATUALIZACAO :07/10/2016
+ * ULTIMA ATUALIZACAO :14/10/2016
  * 
  * DS-> LEANDRO BRITO
  */
  include_once './util/conectaBanco.php';
-class CalendarioDocente {
+class CalendarioTurmaView {
     public $codFilial;
     public $dia;
     public $mes;
@@ -39,6 +39,10 @@ class CalendarioDocente {
         $tamandoDaStringMes = strlen($mes);
         $select = "";
         $cont = 0;
+        $status = 0;
+        $corProfe = array();
+        $corProfe[0] = $this->cor;
+        $corProfe[2] =  0;
         include_once './util/includeBanco.php';
         
         if ($tamandoDaString != 2 && $tamandoDaStringMes != 2) {
@@ -46,54 +50,66 @@ class CalendarioDocente {
              $select = "SELECT * FROM PHE_CALENDARIO_TURMA WHERE CODIGO_TURMA= '$turma' AND DATADIA LIKE '$ano-0$mes-0$dia' AND CODFILIAL = $codFilial";
              $resultado = mssql_query($select);
              while ($linha = mssql_fetch_array($resultado)) {
-                 $cont ++;
+                $cont ++; 
+                $corProfe[0] = $linha['COR_PROFESSOR'];
+                $corProfe[2] += $cont;
              }
              if ($cont != 1 && $cont != 0) {
-                 return 1;
+                 return $corProfe;
              }
              else{
-                 return 0;
+                 return $corProfe;
              }
         }
         elseif($tamandoDaString == 2 && $tamandoDaStringMes != 2){
-             $select = "SELECT DATADIA FROM PHE_CALENDARIO_TURMA WHERE DATADIA LIKE '$ano-0$mes-$dia' AND CODFILIAL = $codFilial AND CODIGO_TURMA= '$turma'";
+             $select = "SELECT * FROM PHE_CALENDARIO_TURMA WHERE DATADIA LIKE '$ano-0$mes-$dia' AND CODFILIAL = $codFilial AND CODIGO_TURMA= '$turma'";
              $resultado = mssql_query($select);
              while ($linha = mssql_fetch_array($resultado)) {
-                 $cont ++;
+                 $cont ++; 
+                $corProfe[0] = $linha['COR_PROFESSOR'];
+                $corProfe[2] += $cont;
+                 
              }
              if ($cont != 0 && $cont != 1) {
-                 return 1;
+                 return $corProfe;
              }
              else{
-                 return 0;
+                return $corProfe;
              }
         }
         elseif($tamandoDaString == 2 && $tamandoDaStringMes == 2){
-             $select = "SELECT DATADIA FROM PHE_CALENDARIO_TURMA WHERE DATADIA LIKE '$ano-$mes-$dia' AND CODFILIAL = $codFilial AND CODIGO_TURMA= '$turma'";
+              $select = "SELECT * FROM PHE_CALENDARIO_TURMA WHERE DATADIA LIKE '$ano-$mes-$dia' AND CODFILIAL = $codFilial AND CODIGO_TURMA= '$turma'";
                      
              $resultado = mssql_query($select);
-             while ($linha = mssql_fetch_array($resultado)) {
-                 $cont ++;
+              while ($linha = mssql_fetch_array($resultado)) {
+                 $cont ++; 
+                $corProfe[0] = $linha['COR_PROFESSOR'];
+                $corProfe[2] += $cont;
+                 
              }
              if ($cont != 0 && $cont != 1) {
-                 return 1;
+                 return $corProfe;
              }
              else{
-                 return 0;
+                 return $corProfe;
              }
+             
         }
         elseif($tamandoDaString == 1 && $tamandoDaStringMes == 2){
-             $select = "SELECT DATADIA FROM PHE_CALENDARIO_TURMA WHERE DATADIA LIKE '$ano-$mes-0$dia' AND CODFILIAL = $codFilial AND CODIGO_TURMA= '$turma'";
+              $select = "SELECT * FROM PHE_CALENDARIO_TURMA WHERE DATADIA LIKE '$ano-$mes-0$dia' AND CODFILIAL = $codFilial AND CODIGO_TURMA= '$turma'";
                      
              $resultado = mssql_query($select);
              while ($linha = mssql_fetch_array($resultado)) {
-                 $cont ++;
+                 $cont ++; 
+                $corProfe[0] = $linha['COR_PROFESSOR'];
+                $corProfe[2] += $cont;
+                 
              }
              if ($cont != 0 && $cont != 1) {
-                 return 1;
+                 return $corProfe;
              }
              else{
-                 return 0;
+                 return $corProfe;
              }
         }
         
@@ -139,9 +155,9 @@ class CalendarioDocente {
             if ( $casa < $this->dsprimdia ) {
                echo "<td> </td>\n";
             } else {
-               $recebeFuncao = $this->verificaData($this->codFilial, $this->mes, $this->dia,  $this->turma,$this->ano);
-               if($recebeFuncao == 1){
-                   $color = $this->cor;
+                $recebeFuncao = $this->verificaData($this->codFilial, $this->mes, $this->dia,  $this->turma,$this->ano);
+               if($recebeFuncao[2] != 0){
+                   $color = $recebeFuncao[0];
                    echo "<td align='center' style='background-color:$color;'>\n";
                echo $this->dia."";
                echo "</td>\n";

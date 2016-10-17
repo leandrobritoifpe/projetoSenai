@@ -3,7 +3,7 @@
  * CLASSE DiaNaoLetivoDao
  * OJETIVO : RESPOSAVEL POR TODA A COMUNICACAO COM O BANCO DE DADOS
  * CRIADA : 25/08/2016
- * ULTIMA ATUALIZACAO : 03/09/2016
+ * ULTIMA ATUALIZACAO : 14/09/2016
  * 
  * DS -> LEANDRO BRITO ;)
  */
@@ -27,6 +27,48 @@ class DiaNaoLetivoDao {
             $this->conexao = $con->conectandoComBanco();
         } catch (Exception $e) {
             echo 'Exceção capturada: ', $e->getMessage(), "\n";
+        }
+    }
+    public function insertDiaNaoLetivoProfessor(CalendarioProfessor $docente) {
+        try {
+            $data = $docente->get_dataDia();
+            $codFilial = $docente->get_codigoFilial();
+            $codDocente = $docente->get_codigoDocente();
+            $descricao = $docente->get_descricao();
+            $userCadastrante = $docente->get_userCadastrante();
+            $codInativo = $codDocente.'_INAT';
+            $sql = "INSERT INTO PHE_CALENDARIO_DOCENTE (CODFILIAL,DATADIA,CODIGODOCENTE,RECCREATEDBY,CODDESCRICAO,STATUS) "
+                    . "VALUES ($codFilial,'$data',$codDocente,'$userCadastrante',$descricao,1)";
+            $update = "UPDATE PHE_CALENDARIO_TURMA SET FNLD = '$codInativo', CODIGO_PROFESSOR = 0 WHERE CODFILIAL = $codFilial "
+                    . "AND DATADIA = '$data' AND CODIGO_PROFESSOR = $codDocente";
+            $result = mssql_query($sql);
+            $resultUpdate = mssql_query($update);
+            if ($result && $resultUpdate) {
+                return true;
+            }
+            return false;
+        } catch (Exception $ex) {
+            echo 'Exceção capturada: ', $ex->getMessage(), "\n";
+        }
+    }
+    public function removeDiaNaoLetivoProfessor(CalendarioProfessor $docente) {
+        try {
+            $data = $docente->get_dataDia();
+            $codFilial = $docente->get_codigoFilial();
+            $codDocente = $docente->get_codigoDocente();
+            $codInativo = $codDocente.'_INAT';
+            $delete = "DELETE FROM PHE_CALENDARIO_DOCENTE WHERE CODFILIAL = $codFilial "
+                    . "AND CODIGODOCENTE = $codDocente AND DATADIA = '$data'";
+            $update = "UPDATE PHE_CALENDARIO_TURMA SET CODIGO_PROFESSOR = $codDocente, FNLD = 0 "
+                    . "WHERE FNLD = '$codInativo' AND CODFILIAL = $codFilial AND DATADIA = '$data'";
+            $resutl = mssql_query($delete);
+            $resultUpdate = mssql_query($update);
+            if ($resultUpdate && $resutl) {
+                return true;
+            }
+            return false;
+        } catch (Exception $exc) {
+            echo 'Exceção capturada: ', $exc->getMessage(), "\n";
         }
     }
     public function inseriDiaNaoLetivoTurma(DiaNaoLetivo $diaNaoLetivo, $codigoTurma) {

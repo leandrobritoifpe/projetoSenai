@@ -3,7 +3,7 @@
 /*
  * 
  * CRIADA: 07/10/2016
- * ULTIMA ATUALIZACAO : 07/10/2016
+ * ULTIMA ATUALIZACAO : 14/10/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -12,22 +12,10 @@
     include './gerenciadorDeFuncoes.php';
     $con = conectandoComBanco();
     $codFilial = 1;
-    $codDocente = 84;
+    //$codDocente = 84;
     $ano = 2016;
-    $turma = 'TEC.007.PLAN.1.01';
-    $cor = 'blue';
-    $sql = "SELECT TOP 1 DATADIA
-            FROM PHE_CALENDARIO_DOCENTE
-            WHERE CODFILIAL = $codFilial 
-            AND DATADIA LIKE '$ano%'
-            AND CODIGODOCENTE = $codDocente 
-            ORDER BY DATADIA DESC";
-    $result = mssql_query($sql);
-    
-    $cont =0;
-    if (!mssql_num_rows($result)) {
-        echo "<script>window.location='index.php';alert('NAO HA NENHUM CALENDARIO CADASTRADO');</script>";
-    }
+    $turma = 'P.1-APP.464.XXX';
+    $cor = '#AB7A7A';
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -73,7 +61,7 @@
                                 ?>
                             </div>
                             <?php
-                               $janiero = new CalendarioDocente();
+                               $janiero = new CalendarioTurmaView();
                                $janiero->geraCalendario($index, $ano,$codFilial,$turma,$cor);
                             ?>
                         </div>
@@ -96,7 +84,7 @@
                                 ?>
                             </div>
                             <?php
-                               $janiero = new CalendarioDocente();
+                               $janiero = new CalendarioTurmaView();
                                $janiero->geraCalendario($index, $ano,$codFilial,$turma,$cor);
                             ?>
                         </div>
@@ -119,7 +107,7 @@
                                 ?>
                             </div>
                             <?php
-                               $janiero = new CalendarioDocente();
+                               $janiero = new CalendarioTurmaView();
                                $janiero->geraCalendario($index, $ano,$codFilial,$turma,$cor);
                             ?>
                         </div>

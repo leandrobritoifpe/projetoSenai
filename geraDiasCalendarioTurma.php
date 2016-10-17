@@ -3,7 +3,7 @@
  * CLASSE CalendarioEscolarDao
  * OBJETIVO: SERVIR DE CONTROLE
  * CRIADA: 21/09/2016
- * ULTIMA ATUALIZACAO : 05/10/2016
+ * ULTIMA ATUALIZACAO : 10/10/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -21,6 +21,7 @@ $codTurno = 1;
 $dataInicial = '2016-03-05';
 $userCadastrante = 'DARIO';
 $diasRecesso = 0;
+$cor = 'blue';
 
 $calendarioTurma = new CalendarioTurma();
 $calendarioTurma->set_codCurso($codCurso);
@@ -32,6 +33,7 @@ $calendarioTurma->set_diasRecesso($diasRecesso);
 $calendarioTurma->set_userCadastrante($userCadastrante);
 
 $geroucomSucesso = $dao->geraDiasCalendarioTurma($calendarioTurma);
+$dao->inseriCorTurma($codFilial, $codTurma, $cor);
 //$sucesso = $dao->geraProximoDia($calendarioTurma);
 $dao->fechaBanco();
 

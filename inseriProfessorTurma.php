@@ -4,7 +4,7 @@
  * 
  * 
  * CRIADA: 05/10/2016
- * ULTIMA ATUALIZACAO : 07/10/2016
+ * ULTIMA ATUALIZACAO : 14/10/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -15,19 +15,22 @@ include_once './dao/CalendarioDocenteDao.php';
 
 $codFilial = 1;
 $subDisc = 'APP.020.0107_1';
-$turma = 'APP.632.P.1.XX';
-$turno = 3;
+$turma = 'P.1-APP.632.XXX';
+$turno = 4;
 $docente = 84;
+
 $dao = new CalendarioDocenteDao();
 $dao->abreBanco();
+$cor = $dao->retornaCorDocente($codFilial, $docente);
 $dadosCalendarioTurma = $dao->diasAulasSubDisciplina($codFilial, $subDisc, $turma);
-$arrayDiasUteis = $dao->verificaSeDataExiste($dadosCalendarioTurma, $codFilial, $docente, $turno);
+$diasLetivoProfessor = $dao->diasLivreProfessor($dadosCalendarioTurma, $codFilial, $docente);
+$arrayDiasUteis = $dao->verificaSeDataExiste($diasLetivoProfessor, $codFilial, $docente, $turno);
 $diasDeAula = $arrayDiasUteis[0];
 $dias = $dao->professorTemHora($docente, $codFilial, $diasDeAula);
 $diasLivre = $dias[0];
-echo count($diasLivre);
+count($diasLivre);
 if (count($diasLivre) != 0) {
-    $gerouComSucesso = $dao->inseriProfessorTurma($codFilial, $turma, $diasLivre, $docente, $turno);
+    $gerouComSucesso = $dao->inseriProfessorTurma($diasDeAula, $docente, $cor);
     $dao->fechaBanco();
     if ($gerouComSucesso) {
        // echo "<script>window.location='index.php';alert('PROFESSOR INSERIDO NA TURMAS, E SEUS DIAS DIAS DE AULAS ATUALIZADOS COM SUCESSO');</script>";

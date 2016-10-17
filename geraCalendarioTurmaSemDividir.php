@@ -3,7 +3,7 @@
  * 
  * OJETIVO : SERVIR DE CONTROLLER 
  * CRIADA : 23/09/2016
- * ULTIMA ATUALIZACAO : 23/09/2016
+ * ULTIMA ATUALIZACAO : 14/10/2016
  * 
  * DS -> LEANDRO BRITO ;)
  */
@@ -14,7 +14,7 @@ include_once './dao/CalendarioTurmaDao.php';
 $dao = new CalendarioTurmaDao();
 $dao->abreBanco();
 $codFilial = 1;
-$codCurso = "TEC.002";
+$codCurso = "TEC.063";
 $calendarioTurma = new CalendarioTurma();
 $calendarioTurma->set_codCurso($codCurso);
 $calendarioTurma->set_codFilial($codFilial);

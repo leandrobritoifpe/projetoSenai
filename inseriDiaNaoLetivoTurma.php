@@ -1,7 +1,7 @@
 <?php
 /*
     CRIADA: 20/09/2016
- *  ULTIMA ATUALIZACAO : 07/09/2016
+ *  ULTIMA ATUALIZACAO : 14/10/2016
  * 
  * DS-> LEANDRO BRITO
  * 
@@ -14,7 +14,7 @@ include_once './entidades/DiaNaoLetivo.php';
 include_once './entidades/CalendarioTurma.php';
 include_once './dao/CalendarioTurmaDao.php';
 
-$codigoTurma = 'APP.464.PLAN.1.01';
+$codigoTurma = 'APP.558.P.1.XX';
 $codFilial = 1;
 $dataInicial = '2016-10-04';
 $dataFinal = '2016-10-06';
@@ -57,7 +57,7 @@ if ($ultimoDiaDeAula != '') {
     $regerouDiasDeAula = $dao->regeraDiasDeAulaTurma($calendarioTurma);
     $dao->fechaBanco();
     if ($regerouDiasDeAula) {
-        //echo "<script>window.location='index.php';alert('CALENDARIO DA TURMA ATUALIZADO COM SUCESSO');</script>";
+        //echo "<script>window.location='index.php';alert('ATENCAO!!! POR CAUSA DESSE IMPREVISTO, ALGUNS PROFESSORES ENTRARAM EM CHOQUE DE HORÁRIOS, POR FAVOR VERIFIQUE OS HORÁRIOS DOS PROFESSORES');</script>";
         echo "deu certo";
     }
     else{

@@ -4,7 +4,7 @@
  * 
  *
  * CRIADA: 05/10/2016
- * ULTIMA ATUALIZACAO : 05/10/2016
+ * ULTIMA ATUALIZACAO : 14/10/2016
  * 
  * DS-> LEANDRO BRITO
  */
@@ -29,6 +29,13 @@ class ProfessorExpertises {
         $this->codProfesor = $codProfessor;
         $this->escala = $esala;
     }
-
-    
+    public function get_codProfessor(){
+        return $this->codProfesor;
+    }
+    public function get_codSubDisciplina(){
+        return $this->codSubDisciplina;
+    }
+    public function get_escala(){
+        return $this->escala;
+    }
 }
