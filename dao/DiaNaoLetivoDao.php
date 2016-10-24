@@ -94,7 +94,7 @@ class DiaNaoLetivoDao {
                 $lista[1] = $this->retornaCalendarioTurma($ultimoId, $codigoTurma, $atributos[1]);
                 return $lista;
             }
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
             echo 'Exceção capturada: ', $e->getMessage(), "\n";
         }
     }

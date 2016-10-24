@@ -14,10 +14,10 @@ include_once './entidades/DiaNaoLetivo.php';
 include_once './entidades/CalendarioTurma.php';
 include_once './dao/CalendarioTurmaDao.php';
 
-$codigoTurma = 'APP.558.P.1.XX';
+$codigoTurma = 'P.1-TEC.063.XXX7';
 $codFilial = 1;
-$dataInicial = '2016-10-04';
-$dataFinal = '2016-10-06';
+$dataInicial = '2016-02-02';
+$dataFinal = '2016-02-04';
 $userCadastrante = "DARIO";
 
 $diaoNaoLeitvo = new DiaNaoLetivo();
@@ -53,6 +53,7 @@ $ultimoDiaDeAula = $dao->adiantaDiasDeAula($calendarioTurma, $idDiaNulo);
 
 
 if ($ultimoDiaDeAula != '') {
+    
     $calendarioTurma->set_dataInicial($ultimoDiaDeAula);
     $regerouDiasDeAula = $dao->regeraDiasDeAulaTurma($calendarioTurma);
     $dao->fechaBanco();

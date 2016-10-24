@@ -54,17 +54,21 @@ class AutomatizacaoProfessoresDao {
             echo 'Exceção capturada: ', $exc->getMessage(), "\n";
         }
     }
-    public function professoresDoTurno($codFilial, $codTurno){
+    public function horasProfessor($codFilial, $docente){
         try {
-            
+            $sql = "SELECT * FROM PHE_CALENDARIO_TURMA WHERE CODFILIAL = $codFilial "
+                    . "AND CODIGO_PROFESSOR = $docente";
+            $result = mssql_query($sql);
+            return mssql_num_rows($result);
         } catch (Exception $exc) {
             echo $exc->getTraceAsString();
         }
         }
-    public function professoresComMaiorEspertises($codFilial, $subDisciplina) {
+    public function professoresComMaiorEspertises($codFilial, $subDisciplina,$turno) {
         try {
-            $sql = "SELECT * FROM PHE_EXPERTISES WHERE CODIGO_SUBDISC = '$subDisciplina' "
-                    . "AND CODFILIAL = $codFilial ORDER BY ESCALA";
+            $sql = "SELECT * FROM PHE_EXPERTISES E "
+                    . "INNER JOIN PHE_TURNO_DOCENTE TD ON E.CODPESSOA = TD.CODPESSOA "
+                    . "WHERE E.CODIGO_SUBDISC = '$subDisciplina' AND E.CODFILIAL = $codFilial AND TD.CODTURNO = $turno ORDER BY E.ESCALA";
             $result = mssql_query($sql);
             $professoresExpertises = array();
             if (mssql_num_rows($result)) {

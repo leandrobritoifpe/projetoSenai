@@ -36,7 +36,14 @@ class CursoDisciplina {
     private $subCodigo;
     private $subDiscOrdem;
     private $subHora;
+    private $codFilial;
     
+    public function set_codFilial($codFilial){
+        $this->codFilial = $codFilial;
+    }
+    public function get_codFilial(){
+        return $this->codFilial;
+    }
     public function set_subHora($subHora){
         $this->subHora = $subHora;
     }

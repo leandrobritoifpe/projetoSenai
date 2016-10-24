@@ -127,7 +127,14 @@ class Calendario {
                echo $this->dia."";
                echo "</td>\n";
                $this->proximo_dia();
-               }else{
+               }
+               elseif(date('w', strtotime(date("Y-m-d", $this->tstamp))) == 0){
+               echo "<td align='center' style='background-color:green;'>\n";
+               echo $this->dia."";
+               echo "</td>\n";
+               $this->proximo_dia();
+               }
+               else{
                    echo "<td align='center' style = 'color:blue;'>\n";
                    echo $this->dia."\n";
                echo "</td>\n";

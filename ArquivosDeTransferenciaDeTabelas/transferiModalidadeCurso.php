@@ -8,14 +8,13 @@ include_once '../util/conexaoBancoOrigem.php';
 $conexaoBancoOrigem = conexaoBancoOrigem();
 $listaDeDados = array();
 $i = 0;
-$tabelaOrigem = 'dbo.SEIXOTECNOLOGICO';
-$selectOrigem = "SELECT * FROM $tabelaOrigem";
+$tabelaOrigem = 'dbo.SMODALIDADECURSO';
+$selectOrigem = "SELECT * FROM $tabelaOrigem WHERE CODCOLIGADA = 3";
 $resultado = mssql_query($selectOrigem);
 while ($registro = mssql_fetch_array($resultado)) {
     $arrayDados = array();
-    $arrayDados[] = $registro['IDEIXOTECNOLOGICO'];
-    $arrayDados[] = $registro['CODEIXOTECNOLOGICO'];
-    $arrayDados[] = $registro['NOME'];
+    $arrayDados[] = $registro['CODCOLIGADA'];
+    $arrayDados[] = $registro['CODMODALIDADECURSO'];
     $arrayDados[] = $registro['DESCRICAO'];
     $arrayDados[] = $registro['RECMODIFIEDON'];
     $listaDeDados[$i] = $arrayDados;
@@ -25,30 +24,34 @@ mssql_close($conexaoBancoOrigem);
 
 include_once '../util/conexaoBancoDestino.php';
 $conexaoBancoDestino = conectandoComBancoDestino();
-$tabelaDestino = 'PHE_SEIXOTECNOLOGICO';
+$tabelaDestino = 'PHE_SMODALIDADECURSO';
 for ($i = 0; $i < count($listaDeDados); $i++) {
     $arrayAuxiliar = $listaDeDados[$i];
-    $selectDestino = "SELECT * FROM $tabelaDestino WHERE IDEIXOTECNOLOGICO = $arrayAuxiliar[0]";
+    $selectDestino = "SELECT * FROM $tabelaDestino WHERE CODMODALIDADECURSO = '$arrayAuxiliar[1]'";
     $result = mssql_query($selectDestino);
     $recmofifiedon = "";
     if (mssql_num_rows($result)) {
         while ($linha = mssql_fetch_array($result)) {
           $recmofifiedon = $linha['RECMODIFIEDON'];
         }
-        if ($recmofifiedon != '' && $recmofifiedon != null && $arrayAuxiliar[4] > $recmofifiedon) {
-         $update = "UPDATE $tabelaDestino SET CODEIXOTECNOLOGICO = '$arrayAuxiliar[1]', "
-                    . "NOME = '$arrayAuxiliar[2]', DESCRICAO = '$arrayAuxiliar[3]', "
-                  . "RECMODIFIEDON = '$arrayAuxiliar[4]'"
-                 . "WHERE IDEIXOTECNOLOGICO = $arrayAuxiliar[0]";
+        if ($recmofifiedon != '' && $recmofifiedon != null && $arrayAuxiliar[3] > $recmofifiedon) {
+         $update = "UPDATE $tabelaDestino SET DESCRICAO= '$arrayAuxiliar[2]',RECMODIFIEDON = '$arrayAuxiliar[3]' "
+                 . "WHERE CODMODALIDADECURSO = '$arrayAuxiliar[1]'";
           mssql_query($update);
         }
     }
     else{
-       $insert = "INSERT $tabelaDestino (IDEIXOTECNOLOGICO,CODEIXOTECNOLOGICO,NOME,DESCRICAO,RECMODIFIEDON) "
-                . "VALUES ($arrayAuxiliar[0],'$arrayAuxiliar[1]','$arrayAuxiliar[2]','$arrayAuxiliar[3]','$arrayAuxiliar[4]')";
+       $insert = "INSERT $tabelaDestino (CODCOLIGADA,CODMODALIDADECURSO,DESCRICAO,RECMODIFIEDON) "
+                . "VALUES ($arrayAuxiliar[0],'$arrayAuxiliar[1]','$arrayAuxiliar[2]','$arrayAuxiliar[3]')";
         mssql_query($insert);
     }
 }
 mssql_close($conexaoBancoDestino);
+
+
+
+
+
+
 
 

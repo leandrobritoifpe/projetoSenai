@@ -47,8 +47,12 @@ else{
 }
     
 }
+//
+//$ano = '2016-07-05';
+//$rest = substr($ano,5,9);  // retorna "abcde"
+//$rest2 = substr($ano,0,5);  // retorna "abcde"
+//echo $datap = $rest2.$rest;
 
-$ano = '2016-07-05';
-$rest = substr($ano,5,9);  // retorna "abcde"
-$rest2 = substr($ano,0,5);  // retorna "abcde"
-echo $datap = $rest2.$rest;
+$teste = mktime(0, 0, 0, 1, 2, 2017);
+echo "<br>";
+echo date('w', strtotime(date("Y-m-d", $teste)));
